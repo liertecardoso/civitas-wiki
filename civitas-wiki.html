@@ -1,0 +1,3602 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Civitas Wiki</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+:root{
+  /* layout: fixed index rail on the left, one long reading column; collapses to a top index on phones */
+  --bg:#f6f7f8; --paper:#ffffff; --ink:#16202a; --muted:#56636f; --line:#d9dee3;
+  --accent:#0b6b74; --accent-soft:#e3f1f2; --note:#fbf5e6; --note-line:#c99a2e;
+  --code-bg:#eef1f4;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-head:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f151b; --paper:#151d25; --ink:#e3e8ec; --muted:#9aa7b2; --line:#2a3540;
+  --accent:#5cc3cc; --accent-soft:#16343a; --note:#2a2414; --note-line:#c99a2e; --code-bg:#1d2730; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --paper:#151d25; --ink:#e3e8ec; --muted:#9aa7b2; --line:#2a3540;
+  --accent:#5cc3cc; --accent-soft:#16343a; --note:#2a2414; --note-line:#c99a2e; --code-bg:#1d2730; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.65 var(--f-body);}
+a{color:var(--accent)}
+a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:100%;}
+.rail{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow-y:auto;border-right:1px solid var(--line);
+  background:var(--paper);padding:20px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand b{font:600 20px/1.2 var(--f-head);letter-spacing:.01em}
+.brand span{font:12px/1.4 var(--f-mono);color:var(--muted)}
+.search{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:14px var(--f-body)}
+.hits{font:12px var(--f-mono);color:var(--muted);min-height:1em}
+nav ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+nav a{display:block;padding:5px 10px;border-radius:5px;text-decoration:none;color:var(--ink);font-size:14px;line-height:1.35}
+nav a:hover{background:var(--bg)}
+nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+nav li.d1 a{padding-left:24px;font-size:13.5px;color:var(--muted)}
+nav li.d1 a.on{color:var(--accent)}
+nav li.hide{display:none}
+.main{padding-block:28px 80px;padding-inline:clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:28px;min-width:0}
+.masthead{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.masthead h2{margin:0;font:600 28px/1.15 var(--f-head);text-wrap:balance}
+.masthead .meta{font:12.5px var(--f-mono);color:var(--muted)}
+.page{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px clamp(16px,3vw,36px) 28px;min-width:0;scroll-margin-top:16px}
+.page.dim{display:none}
+.page-head{border-bottom:1px solid var(--line);margin-bottom:14px;padding-bottom:10px}
+.crumb{margin:0 0 2px;font:11.5px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.page h1{margin:0;font:600 24px/1.2 var(--f-head);text-wrap:balance}
+.prose{max-width:860px}
+.prose h2{font:600 18px/1.3 var(--f-head);margin:26px 0 8px;text-wrap:balance}
+.prose h3{font:600 15.5px/1.3 var(--f-body);margin:20px 0 6px}
+.prose p,.prose li{max-width:68ch}
+.prose ul,.prose ol{padding-left:22px}
+.prose code{font:13px var(--f-mono);background:var(--code-bg);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.prose pre:not(.mermaid){background:var(--code-bg);padding:12px 14px;border-radius:6px;overflow-x:auto}
+.prose pre code{background:none;padding:0}
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--bg);font-weight:600;font-size:12.5px;letter-spacing:.02em;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+blockquote.note{margin:14px 0;padding:10px 14px;background:var(--note);border:1px solid var(--note-line);border-radius:6px}
+blockquote.note p{margin:4px 0}
+.diagram{overflow-x:auto;margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+.toggle{display:none}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}
+  .toggle{display:block}
+  .rail nav{display:none}
+  .rail.open nav{display:block}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<div class="shell">
+<aside class="rail">
+  <div class="brand"><b>Civitas Wiki</b><span>Brasiline · ARX Cyber</span></div>
+  <input id="q" class="search" type="search" placeholder="Buscar na wiki" aria-label="Buscar na wiki">
+  <div id="hits" class="hits" aria-live="polite"></div>
+  <button id="tg" class="toggle search" type="button" aria-expanded="false">Índice</button>
+  <nav aria-label="Páginas"><ul><li class="d0"><a href="#p-Home" data-id="p-Home">Civitas — Wiki do Projeto</a></li><li class="d0"><a href="#p-Visao-Geral" data-id="p-Visao-Geral">Visão Geral</a></li><li class="d0"><a href="#p-Regras-de-Negocio" data-id="p-Regras-de-Negocio">Regras de Negócio</a></li><li class="d0"><a href="#p-Arquitetura" data-id="p-Arquitetura">Arquitetura</a></li><li class="d1"><a href="#p-Arquitetura-Camadas" data-id="p-Arquitetura-Camadas">Camadas</a></li><li class="d1"><a href="#p-Arquitetura-Mapeamento-Azure" data-id="p-Arquitetura-Mapeamento-Azure">Mapeamento Azure</a></li><li class="d1"><a href="#p-Arquitetura-Isolamento-de-Dados" data-id="p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a></li><li class="d1"><a href="#p-Arquitetura-Eventos" data-id="p-Arquitetura-Eventos">Eventos</a></li><li class="d0"><a href="#p-Decisoes" data-id="p-Decisoes">Decisões de Arquitetura</a></li><li class="d1"><a href="#p-Decisoes-Modelo-ADR" data-id="p-Decisoes-Modelo-ADR">ADR-000 — Título curto da decisão</a></li><li class="d1"><a href="#p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado" data-id="p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado">ADR-001 — Identidade e catálogo nos dois bancos existentes</a></li><li class="d1"><a href="#p-Decisoes-ADR-002-Um-Schema-por-Tenant" data-id="p-Decisoes-ADR-002-Um-Schema-por-Tenant">ADR-002 — Dados de domínio em um schema por tenant</a></li><li class="d1"><a href="#p-Decisoes-ADR-003-Infraestrutura-Compartilhada" data-id="p-Decisoes-ADR-003-Infraestrutura-Compartilhada">ADR-003 — Infraestrutura de apoio compartilhada</a></li><li class="d1"><a href="#p-Decisoes-ADR-004-Login-Federado" data-id="p-Decisoes-ADR-004-Login-Federado">ADR-004 — Login federado com Entra ID e Google</a></li><li class="d1"><a href="#p-Decisoes-ADR-005-Contas-Break-Glass" data-id="p-Decisoes-ADR-005-Contas-Break-Glass">ADR-005 — Contas locais break-glass no Authentication Service</a></li><li class="d1"><a href="#p-Decisoes-ADR-006-Identificadores-Imutaveis" data-id="p-Decisoes-ADR-006-Identificadores-Imutaveis">ADR-006 — Identificadores imutáveis</a></li><li class="d1"><a href="#p-Decisoes-ADR-007-Token-e-Revogacao" data-id="p-Decisoes-ADR-007-Token-e-Revogacao">ADR-007 — Token Civitas curto com revalidação no IdP</a></li><li class="d1"><a href="#p-Decisoes-ADR-008-Claims-do-Token" data-id="p-Decisoes-ADR-008-Claims-do-Token">ADR-008 — Claims do token Civitas</a></li><li class="d1"><a href="#p-Decisoes-ADR-009-Repositorios-e-Deploy" data-id="p-Decisoes-ADR-009-Repositorios-e-Deploy">ADR-009 — Dois repositórios, um Container App por serviço</a></li><li class="d1"><a href="#p-Decisoes-ADR-010-Comunicacao-entre-Servicos" data-id="p-Decisoes-ADR-010-Comunicacao-entre-Servicos">ADR-010 — Comunicação entre serviços: HTTP para consultas, outbox e Service Bus para eventos</a></li><li class="d1"><a href="#p-Decisoes-ADR-011-Acesso-ARX-Auditado" data-id="p-Decisoes-ADR-011-Acesso-ARX-Auditado">ADR-011 — Acesso da ARX auditado</a></li><li class="d1"><a href="#p-Decisoes-ADR-012-API-Gateway-Depois" data-id="p-Decisoes-ADR-012-API-Gateway-Depois">ADR-012 — API Gateway entra depois</a></li><li class="d1"><a href="#p-Decisoes-ADR-013-Cache-de-Tenants" data-id="p-Decisoes-ADR-013-Cache-de-Tenants">ADR-013 — Cache de tenants no Authentication</a></li><li class="d1"><a href="#p-Decisoes-ADR-014-Admin-como-Usuario-Normal" data-id="p-Decisoes-ADR-014-Admin-como-Usuario-Normal">ADR-014 — Administrador do cliente como usuário normal</a></li><li class="d0"><a href="#p-Servicos" data-id="p-Servicos">Serviços</a></li><li class="d1"><a href="#p-Servicos-Modelo-de-Servico" data-id="p-Servicos-Modelo-de-Servico">Nome do Serviço</a></li><li class="d1"><a href="#p-Servicos-Authentication" data-id="p-Servicos-Authentication">Authentication Service</a></li><li class="d1"><a href="#p-Servicos-User" data-id="p-Servicos-User">User Service</a></li><li class="d1"><a href="#p-Servicos-RBAC" data-id="p-Servicos-RBAC">RBAC Service</a></li><li class="d1"><a href="#p-Servicos-Tenant" data-id="p-Servicos-Tenant">Tenant Service</a></li><li class="d1"><a href="#p-Servicos-Core" data-id="p-Servicos-Core">Core Service</a></li><li class="d1"><a href="#p-Servicos-Outbox-Relay" data-id="p-Servicos-Outbox-Relay">Outbox relay</a></li><li class="d0"><a href="#p-Tenants" data-id="p-Tenants">Tenants</a></li><li class="d0"><a href="#p-Fluxos" data-id="p-Fluxos">Fluxos</a></li><li class="d0"><a href="#p-DevOps" data-id="p-DevOps">DevOps</a></li><li class="d1"><a href="#p-DevOps-Ambientes" data-id="p-DevOps-Ambientes">Ambientes</a></li><li class="d1"><a href="#p-DevOps-Pipeline-e-Deploy" data-id="p-DevOps-Pipeline-e-Deploy">Pipeline e Deploy</a></li><li class="d1"><a href="#p-DevOps-Observabilidade" data-id="p-DevOps-Observabilidade">Observabilidade</a></li><li class="d1"><a href="#p-DevOps-Migracoes-de-Banco" data-id="p-DevOps-Migracoes-de-Banco">Migrações de Banco</a></li><li class="d0"><a href="#p-Sprints" data-id="p-Sprints">Sprints</a></li><li class="d1"><a href="#p-Sprints-Modelo-de-Sprint" data-id="p-Sprints-Modelo-de-Sprint">Sprint N — Objetivo</a></li><li class="d1"><a href="#p-Sprints-Sprint-Autenticacao-e-Tenants" data-id="p-Sprints-Sprint-Autenticacao-e-Tenants">Sprint — Autenticação e Tenants</a></li><li class="d0"><a href="#p-Pendencias" data-id="p-Pendencias">Pendências</a></li><li class="d0"><a href="#p-Glossario" data-id="p-Glossario">Glossário</a></li><li class="d0"><a href="#p-Como-Contribuir" data-id="p-Como-Contribuir">Como Contribuir</a></li></ul></nav>
+</aside>
+<main class="main">
+  <div class="masthead"><h2>Documentação do projeto Civitas</h2><span class="meta">Atualizado em 2026-10-09 · próxima review 2026-10-16</span></div>
+  <section class="page" id="p-Home"><header class="page-head"><h1>Civitas — Wiki do Projeto</h1></header><div class="prose"><p>Esta wiki é a fonte oficial de como o Civitas é construído: arquitetura, decisões, serviços, regras de negócio e operação. Se algo não está aqui, não está decidido.</p>
+<p><strong>Última atualização:</strong> 2026-10-09 · <strong>Próxima sprint review:</strong> 2026-10-16 (sexta-feira)</p>
+<h2>Por onde começar</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Se você quer...</th>
+<th>Leia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entender o produto e o vocabulário</td>
+<td><a href="#p-Visao-Geral">Visão Geral</a> e <a href="#p-Glossario">Glossário</a></td>
+</tr>
+<tr>
+<td>Saber o que a diretoria definiu</td>
+<td><a href="#p-Regras-de-Negocio">Regras de Negócio</a></td>
+</tr>
+<tr>
+<td>Ver como a plataforma está montada hoje</td>
+<td><a href="#p-Arquitetura">Arquitetura</a></td>
+</tr>
+<tr>
+<td><strong>Entender onde ficam os dados de cada cliente</strong></td>
+<td><a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a></td>
+</tr>
+<tr>
+<td>Saber por que algo foi decidido</td>
+<td><a href="#p-Decisoes">Decisões</a></td>
+</tr>
+<tr>
+<td>Implementar ou alterar um serviço</td>
+<td><a href="#p-Servicos">Serviços</a></td>
+</tr>
+<tr>
+<td>Entender o ciclo de vida de um cliente</td>
+<td><a href="#p-Tenants">Tenants</a></td>
+</tr>
+<tr>
+<td>Ver o que está em andamento</td>
+<td><a href="#p-Sprints">Sprints</a> e <a href="#p-Pendencias">Pendências</a></td>
+</tr>
+<tr>
+<td>Escrever ou atualizar documentação</td>
+<td><a href="#p-Como-Contribuir">Como Contribuir</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2>A arquitetura em quatro frases</h2>
+<ol>
+<li>São dois repositórios: <code>civitas-auth</code> (Authentication, User, RBAC) e <code>civitas-api</code> (Tenant e Core).</li>
+<li>Cada serviço é publicado como um Container App próprio no Azure.</li>
+<li>São dois bancos PostgreSQL: <code>cp_identity</code> (identidade e acesso) e <code>civitas_db</code> (tenants e dados de domínio).</li>
+<li><strong>Cada tenant tem o seu próprio schema dentro do <code>civitas_db</code>.</strong> Os dados de um cliente nunca ficam em tabelas compartilhadas com outro.</li>
+</ol>
+<h2>Equipe</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Papel</th>
+<th>Pessoa</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gestor do projeto / Product Owner / arquitetura</td>
+<td>Jonas Alfonso</td>
+<td>Histórias, critérios de aceite, decisões técnicas, documentação, sprint reviews</td>
+</tr>
+<tr>
+<td>Desenvolvedor sênior</td>
+<td>Felipe (Felpz)</td>
+<td>Backend, segurança, infraestrutura e revisão de código</td>
+</tr>
+<tr>
+<td>Desenvolvedor júnior</td>
+<td>Wanderson</td>
+<td>Integração front-API, telas, serviços de menor risco</td>
+</tr>
+<tr>
+<td>Diretoria</td>
+<td>Clerio Almeida, Lierte Bourguignon, Cristiano Oliveira</td>
+<td>Regras de negócio, prioridades e aprovação das entregas</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Status atual</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SecOps (<code>civitas-secops</code>, interface de operação)</td>
+<td>No ar</td>
+</tr>
+<tr>
+<td>Authentication, User, RBAC (<code>civitas-auth</code>)</td>
+<td>Publicados no Azure, um serviço cada; serviço de autenticação em testes finais; login Microsoft e Google previsto para 2026-10-16</td>
+</tr>
+<tr>
+<td>Tenant, Core (<code>civitas-api</code>)</td>
+<td>Publicados no Azure; schema por tenant e provisionamento até 2026-10-15</td>
+</tr>
+<tr>
+<td>Integrações e módulos de produto</td>
+<td>Planejados</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="note">
+<p>Atualize esta página a cada sprint review.</p>
+</blockquote></div></section><section class="page" id="p-Visao-Geral"><header class="page-head"><h1>Visão Geral</h1></header><div class="prose"><p>O Civitas é a plataforma de segurança da Brasiline / ARX Cyber. Ela concentra, para cada cliente, as informações das ferramentas de segurança que ele usa e entrega visão de ativos, exposições, riscos e relatórios, operada pela ARX através do SecOps.</p>
+<h2>Quem usa</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th>Onde acessa</th>
+<th>O que faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operação ARX</td>
+<td>SecOps</td>
+<td>Cria e administra tenants, módulos e serviços; acessa qualquer cliente</td>
+</tr>
+<tr>
+<td>Administrador do cliente</td>
+<td>Web App</td>
+<td>Configura SSO, domínios, usuários e papéis do próprio tenant</td>
+</tr>
+<tr>
+<td>Analista do cliente</td>
+<td>Web App</td>
+<td>Usa os módulos contratados e gera relatórios</td>
+</tr>
+<tr>
+<td>Sistemas de terceiros</td>
+<td>API</td>
+<td>Consomem funcionalidades sem usar a interface Web</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Módulos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Módulo</th>
+<th>Situação</th>
+<th>Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SecOps</td>
+<td>No ar</td>
+<td>Interface de operação interna</td>
+</tr>
+<tr>
+<td>Identidade e tenants</td>
+<td>Em desenvolvimento</td>
+<td>Authentication, User, RBAC e Tenant</td>
+</tr>
+<tr>
+<td>Integrações (conectores)</td>
+<td>Planejado</td>
+<td>Biblioteca de conectores versionados por fabricante e versão</td>
+</tr>
+<tr>
+<td>Assessment</td>
+<td>Planejado</td>
+<td>Avaliação pontual por framework (NIST, CIS Controls e outros); gera o plano de ação</td>
+</tr>
+<tr>
+<td>Risk Management</td>
+<td>Planejado</td>
+<td>Acompanhamento evolutivo do risco a partir dos dados coletados</td>
+</tr>
+<tr>
+<td>Observabilidade</td>
+<td>Planejado</td>
+<td>Dados das aplicações do Cristiano (Patch Manager e outras) consumidos via API</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Premissas do produto</h2>
+<ul>
+<li>O cliente nunca cria uma conta nova: entra com Microsoft Entra ID ou Google Workspace.</li>
+<li>O volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança.</li>
+<li>Os clientes são majoritariamente Microsoft; a plataforma roda no Azure, região Brazil South.</li>
+</ul></div></section><section class="page" id="p-Regras-de-Negocio"><header class="page-head"><h1>Regras de Negócio</h1></header><div class="prose"><p>Regras definidas pela diretoria. Não são alteradas pelo time técnico: dúvidas vão para <a href="#p-Pendencias">Pendências</a>, e mudanças são registradas no histórico abaixo com data e responsável.</p>
+<h2>Identidade e acesso</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regra</th>
+<th>Origem</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RN-01</td>
+<td>Usuários de clientes autenticam somente via SSO: Microsoft Entra ID ou Google Workspace</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-02</td>
+<td>Contas locais existem só para administração e recuperação (break-glass)</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-03</td>
+<td>A conta raiz da ARX tem no mínimo 2 administradores locais</td>
+<td>Lierte / Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-04</td>
+<td>Ao criar um tenant, a ARX cria 1 administrador local do cliente; os demais usuários são cadastrados pelo próprio cliente</td>
+<td>Lierte</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-05</td>
+<td>Dentro do tenant, o administrador do cliente configura domínios, SSO, MFA, SAML e papéis</td>
+<td>Lierte</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-06</td>
+<td>A organização é vinculada pelo identificador imutável do IdP, nunca pelo domínio (exceção para Google: RN-16)</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-07</td>
+<td>O usuário é vinculado pelo identificador imutável no primeiro login, nunca pelo e-mail</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-08</td>
+<td>Usuário desativado no IdP do cliente perde o acesso ao Civitas sem ação manual da ARX</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-09</td>
+<td>A ARX Cyber acessa e altera a configuração de qualquer tenant</td>
+<td>Lierte / Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-14</td>
+<td>Usuário desativado no IdP perde o acesso ao Civitas em no máximo 10 minutos</td>
+<td>Diretoria (P-01)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-15</td>
+<td>Deve existir uma forma de manter o Civitas aberto continuamente em uma TV do SOC do cliente (modo painel)</td>
+<td>Diretoria (P-01)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-16</td>
+<td>Empresas que usam Google Workspace são vinculadas pelo domínio; exceção à RN-06, porque o Google não fornece identificador imutável da organização no login</td>
+<td>Diretoria (P-02)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-17</td>
+<td>Um usuário de cliente pode pertencer a mais de um tenant (grupo econômico)</td>
+<td>Diretoria (P-06)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-20</td>
+<td>Um tenant pode ter mais de uma organização Microsoft (Entra ID) vinculada</td>
+<td>Diretoria (P-09)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-21</td>
+<td>Contas locais (break-glass) usam MFA por aplicativo autenticador (TOTP)</td>
+<td>Diretoria (P-07)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-22</td>
+<td>O login com Google Workspace entra na sprint atual, junto com o Entra ID</td>
+<td>Diretoria (P-03)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-18</td>
+<td>O cliente vê na auditoria do próprio tenant todo acesso e ação da ARX</td>
+<td>Diretoria (P-08)</td>
+<td>2026-10-09</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Plataforma</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regra</th>
+<th>Origem</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RN-10</td>
+<td>Os serviços são multi-tenant; o que se isola são dados e workloads de integração</td>
+<td>CAB</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-11</td>
+<td>Authentication, User, RBAC e Tenant são microserviços distintos</td>
+<td>CAB / Lierte</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-12</td>
+<td>Conectores são versionados: várias versões de conector para o mesmo produto convivem, porque os clientes mantêm versões antigas</td>
+<td>Clerio</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-19</td>
+<td>Após o cancelamento, os dados do tenant ficam guardados por 30 dias e depois são apagados</td>
+<td>Diretoria (P-05)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>RN-13</td>
+<td>Aplicações do Cristiano (Patch Manager e outras) seguem como produtos separados e expõem API para o Civitas consumir os dados de observabilidade</td>
+<td>Clerio / Lierte</td>
+<td>2026-10</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Módulos de produto</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regra</th>
+<th>Origem</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RN-20</td>
+<td>Assessment é pontual, permite escolher o framework e gera um plano de ação</td>
+<td>Lierte</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>RN-21</td>
+<td>O acompanhamento evolutivo pertence ao Risk Management, não ao Assessment</td>
+<td>Lierte</td>
+<td>2026-10</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Histórico de alterações</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Regra</th>
+<th>Mudança</th>
+<th>Quem decidiu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Arquitetura"><header class="page-head"><h1>Arquitetura</h1></header><div class="prose"><p>Esta página mostra o desenho que está sendo implementado. O CAB (Civitas Architecture Blueprint) é a visão de longo prazo; aqui está o recorte real, com repositórios, serviços, bancos e eventos.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Página</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#p-Arquitetura-Camadas">Camadas</a></td>
+<td>O que cada camada do CAB faz e a situação de cada uma</td>
+</tr>
+<tr>
+<td><a href="#p-Arquitetura-Mapeamento-Azure">Mapeamento Azure</a></td>
+<td>Qual serviço Azure implementa cada componente</td>
+</tr>
+<tr>
+<td><a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a></td>
+<td><strong>Um schema por tenant</strong>, onde fica cada tabela</td>
+</tr>
+<tr>
+<td><a href="#p-Arquitetura-Eventos">Eventos</a></td>
+<td>Quais eventos passam pelo Service Bus, quem publica e quem consome</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Serviços e comunicação</h2>
+<div class="diagram"><pre class="mermaid">graph TD
+    FRONT[&quot;civitas-secops (front)&quot;]
+    subgraph RA[&quot;Repositório civitas-auth&quot;]
+        AUTH[&quot;Authentication&lt;br/&gt;login · token · cache de tenants&quot;]
+        USER[&quot;User&lt;br/&gt;usuários · convites&quot;]
+        RBAC[&quot;RBAC&lt;br/&gt;papéis · vínculos por tenant&quot;]
+    end
+    subgraph RB[&quot;Repositório civitas-api&quot;]
+        TEN[&quot;Tenant&lt;br/&gt;catálogo · cria schema&quot;]
+        CORE[&quot;Core&lt;br/&gt;dados do tenant · auditoria&quot;]
+        RELAY[&quot;Outbox relay&lt;br/&gt;publica eventos&quot;]
+    end
+    SB[&quot;Service Bus&lt;br/&gt;tópicos civitas-tenant e civitas-audit&quot;]
+    FRONT --&gt;|&quot;HTTPS + token Civitas&quot;| AUTH
+    FRONT --&gt;|&quot;HTTPS + token Civitas&quot;| TEN
+    FRONT --&gt;|&quot;HTTPS + token Civitas&quot;| CORE
+    AUTH --&gt;|&quot;HTTP + X-Civitas-Service-Token&quot;| USER
+    AUTH --&gt;|&quot;HTTP + X-Civitas-Service-Token&quot;| RBAC
+    AUTH -.-&gt;|&quot;GET /internal/tenants/{id} (só se faltar no cache)&quot;| TEN
+    RELAY --&gt;|&quot;lê audit_outbox de todos os serviços&quot;| SB
+    SB --&gt;|&quot;civitas-tenant&quot;| AUTH
+    SB --&gt;|&quot;civitas-tenant e civitas-audit&quot;| CORE</pre></div>
+<h2>Dados</h2>
+<div class="diagram"><pre class="mermaid">graph TD
+    subgraph DB1[&quot;Banco cp_identity&quot;]
+        SA[(&quot;auth&lt;br/&gt;sessões · MFA · SSO · break-glass&quot;)]
+        SI[(&quot;identity&lt;br/&gt;usuários · IDs do IdP · convites&quot;)]
+        SR[(&quot;rbac&lt;br/&gt;papéis · vínculos por tenant&quot;)]
+    end
+    subgraph DB2[&quot;Banco civitas_db&quot;]
+        ST[(&quot;tenancy&lt;br/&gt;catálogo · auditoria global&quot;)]
+        subgraph TS[&quot;Um schema por tenant&quot;]
+            TA[(&quot;tenant_a&quot;)]
+            TB[(&quot;tenant_b&quot;)]
+            TN[(&quot;tenant_...&quot;)]
+        end
+    end</pre></div>
+<p>Cada caixa de serviço é um Container App próprio. Os dois repositórios usam o mesmo pacote comum (Azure Artifacts) para validar token, aplicar o contexto de tenant, gerar logs e gravar no outbox.</p>
+<h2>Repositórios</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Repositório</th>
+<th>Serviços</th>
+<th>Banco</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>civitas-secops</code></td>
+<td>Front de operação da ARX</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>civitas-auth</code></td>
+<td>Authentication, User, RBAC</td>
+<td><code>cp_identity</code></td>
+</tr>
+<tr>
+<td><code>civitas-api</code></td>
+<td>Tenant, Core, Outbox relay</td>
+<td><code>civitas_db</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Comunicação</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>De</th>
+<th>Para</th>
+<th>Como</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Front</td>
+<td>Serviços expostos</td>
+<td>HTTPS com token Civitas (JWT)</td>
+</tr>
+<tr>
+<td>Serviço</td>
+<td>Serviço (consulta imediata)</td>
+<td>HTTP com cabeçalho <code>X-Civitas-Service-Token</code></td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>Tenant</td>
+<td>Consulta o <strong>cache de tenants</strong> local; <code>GET /internal/tenants/{id}</code> só quando o tenant não está no cache</td>
+</tr>
+<tr>
+<td>Qualquer serviço</td>
+<td>Outros serviços (aviso de mudança)</td>
+<td>Grava em <code>audit_outbox</code> na mesma transação; o Outbox relay publica no Service Bus (<a href="#p-Arquitetura-Eventos">Eventos</a>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Por que o login não depende do civitas-api</h2>
+<p>O Authentication mantém uma cópia do status de cada tenant (ativo, suspenso, desativado), atualizada pelos eventos do tópico <code>civitas-tenant</code>. Se o <code>civitas-api</code> cair, os logins continuam funcionando. O login local da ARX (break-glass) nunca consulta o Tenant Service.</p></div></section><section class="page" id="p-Arquitetura-Camadas"><header class="page-head"><p class="crumb">Arquitetura</p><h1>Camadas</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Responsabilidade</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Presentation</td>
+<td>Web App, SecOps, futura Mobile, APIs para terceiros</td>
+<td>SecOps no ar; Web App em construção</td>
+</tr>
+<tr>
+<td>Edge</td>
+<td>CDN, WAF, proteção DDoS, DNS</td>
+<td>Em espera no CAB; Azure Front Door previsto</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>Roteamento, autenticação, rate limiting, versionamento, contexto de tenant</td>
+<td>Entra quando houver mais de um serviço exposto (ADR-012)</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Serviços de plataforma e de domínio</td>
+<td>Serviços de identidade e tenants em construção</td>
+</tr>
+<tr>
+<td>Integration</td>
+<td>Conectores por fabricante e versão, coleta e normalização</td>
+<td>Planejada</td>
+</tr>
+<tr>
+<td>Messaging</td>
+<td>Eventos e filas entre serviços</td>
+<td>Service Bus para eventos de domínio</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Persistência, cache, busca, arquivos</td>
+<td>Ver <a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a></td>
+</tr>
+<tr>
+<td>Management</td>
+<td>Administração e operação da plataforma (SecOps, observabilidade)</td>
+<td>Em espera no CAB</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras entre camadas</h2>
+<ul>
+<li>O front nunca acessa banco ou serviço interno diretamente: só a API dos serviços, com token Civitas.</li>
+<li>Sistemas externos não publicam direto na mensageria interna; entram por um endpoint de ingestão autenticado.</li>
+<li>Toda mensagem e toda consulta carrega o <code>tenant_id</code>.</li>
+</ul></div></section><section class="page" id="p-Arquitetura-Mapeamento-Azure"><header class="page-head"><p class="crumb">Arquitetura</p><h1>Mapeamento Azure</h1></header><div class="prose"><p>Nuvem única: Azure, região Brazil South, sem replicação geo-redundante para fora do Brasil.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Serviço Azure</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Front de operação (<code>civitas-secops</code>)</td>
+<td>A preencher (Static Web Apps ou Container Apps)</td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td>Microserviços</td>
+<td>Azure Container Apps, um por serviço</td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td>Bancos <code>cp_identity</code> e <code>civitas_db</code></td>
+<td>Azure Database for PostgreSQL Flexible Server</td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td>Pacote comum</td>
+<td>Azure Artifacts</td>
+<td>Em implementação</td>
+</tr>
+<tr>
+<td>Segredos e chaves de assinatura</td>
+<td>Key Vault</td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td>Identidade</td>
+<td>Entra ID (aplicativo multi-tenant) + Google OIDC</td>
+<td>Em construção</td>
+</tr>
+<tr>
+<td>Observabilidade</td>
+<td>Azure Monitor + Application Insights</td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td>Arquivos e evidências</td>
+<td>Blob Storage, container por tenant</td>
+<td>Planejado</td>
+</tr>
+<tr>
+<td>Eventos de domínio e filas</td>
+<td>Service Bus</td>
+<td>Planejado</td>
+</tr>
+<tr>
+<td>CDN / WAF / DDoS</td>
+<td>Azure Front Door Premium + WAF</td>
+<td>Planejado</td>
+</tr>
+<tr>
+<td>API Gateway</td>
+<td>API Management (ou Kong)</td>
+<td>A decidir (ADR-012)</td>
+</tr>
+<tr>
+<td>Eventos brutos de alto volume</td>
+<td>Azure Data Explorer</td>
+<td>Evolução futura</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Azure Managed Redis</td>
+<td>Planejado</td>
+</tr>
+<tr>
+<td>Busca</td>
+<td>PostgreSQL na primeira versão</td>
+<td>A reavaliar com volume</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Redundância e residência de dados</h2>
+<ul>
+<li>Alta disponibilidade entre zonas dentro de Brazil South.</li>
+<li>Não ativar replicação geo-redundante: a região par de Brazil South fica fora do Brasil.</li>
+</ul></div></section><section class="page" id="p-Arquitetura-Isolamento-de-Dados"><header class="page-head"><p class="crumb">Arquitetura</p><h1>Isolamento de Dados</h1></header><div class="prose"><blockquote class="note">
+<p><strong>Regra principal: cada tenant tem o seu próprio schema PostgreSQL dentro do banco <code>civitas_db</code>.</strong>
+Os dados de domínio de um cliente (monitoramento, auditoria do cliente e, no futuro, ativos e findings) só existem dentro do schema dele. Nenhuma tabela de domínio fica no schema <code>public</code> ou compartilhada entre clientes.</p>
+</blockquote>
+<h2>Por que um schema por tenant</h2>
+<p>O volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança. Com um schema por tenant:</p>
+<ul>
+<li>As tabelas de um cliente não crescem com os dados dos outros, e os índices ficam menores.</li>
+<li>Exportar ou restaurar um cliente é um <code>pg_dump -n tenant_&lt;id&gt;</code>.</li>
+<li>Excluir um cliente (cancelamento, LGPD) é um <code>DROP SCHEMA</code>, não um <code>DELETE</code> em milhões de linhas.</li>
+<li>Um erro de filtro no código não expõe dados de outro cliente, porque as tabelas são fisicamente separadas.</li>
+</ul>
+<p>A decisão está registrada em <a href="#p-Decisoes-ADR-002-Um-Schema-por-Tenant">ADR-002</a>.</p>
+<h2>Onde fica cada dado</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Banco · schema</th>
+<th>Tabelas</th>
+<th>Isolamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cp_identity</code> · <code>auth</code></td>
+<td><code>sessions</code>, <code>mfa_challenges</code>, <code>mfa_policy</code>, <code>auth_config</code>, <code>authorized_domains</code>, <code>saml_providers</code>, <code>local_credentials</code> (break-glass), <code>tenant_status_cache</code>, <code>audit_outbox</code></td>
+<td>Compartilhado, com <code>tenant_id</code> + Row-Level Security</td>
+</tr>
+<tr>
+<td><code>cp_identity</code> · <code>identity</code></td>
+<td><code>users</code>, <code>external_identities</code> (<code>tid</code> + <code>oid</code>, <code>sub</code>), <code>invitations</code>, <code>audit_outbox</code></td>
+<td>Usuário global; convites com <code>tenant_id</code></td>
+</tr>
+<tr>
+<td><code>cp_identity</code> · <code>rbac</code></td>
+<td><code>roles</code>, <code>role_permissions</code>, <code>tenant_memberships</code> (vínculo usuário–tenant com papéis), <code>audit_outbox</code></td>
+<td>Vínculos com <code>tenant_id</code> + Row-Level Security</td>
+</tr>
+<tr>
+<td><code>civitas_db</code> · <code>tenancy</code></td>
+<td><code>tenants</code> (com <code>schema_name</code>), <code>tenant_modules</code>, <code>tenant_contracts</code>, <code>tenant_drafts</code>, <code>provisioning_steps</code>, <code>platform_audit_events</code>, <code>audit_outbox</code></td>
+<td>Catálogo global; só o Tenant Service escreve</td>
+</tr>
+<tr>
+<td><strong><code>civitas_db</code> · <code>tenant_&lt;id&gt;</code></strong></td>
+<td><strong><code>audit_events</code>, <code>monitoring_*</code>; depois ativos, findings e módulos</strong></td>
+<td><strong>Um schema por tenant</strong></td>
+</tr>
+<tr>
+<td>Blob Storage · <code>tenant-&lt;id&gt;</code></td>
+<td>Arquivos e evidências</td>
+<td>Um container por tenant (planejado)</td>
+</tr>
+<tr>
+<td>Key Vault</td>
+<td>Credenciais de integração</td>
+<td>Segredos com prefixo do tenant (planejado)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Resumo: <strong>identidade, acesso e catálogo são compartilhados e protegidos por <code>tenant_id</code>; dados de domínio são isolados por schema.</strong></p>
+<blockquote class="note">
+<p>O administrador do cliente não tem tabela própria. Ele é um usuário normal em <code>identity.users</code>, com o papel Tenant Admin em <code>rbac.tenant_memberships</code> (<a href="#p-Decisoes-ADR-014-Admin-como-Usuario-Normal">ADR-014</a>).</p>
+<p><strong>Situação em 2026-10-13:</strong> hoje o <code>civitas_db</code> tem os schemas compartilhados <code>audit</code> e <code>monitoring</code>. Na entrega da parte de tenants (até 2026-10-15), <code>audit_events</code> e <code>monitoring_*</code> passam para dentro de cada <code>tenant_&lt;id&gt;</code>. O schema <code>audit</code> permanece só para a auditoria global, de ações que não pertencem a nenhum cliente.</p>
+</blockquote>
+<h2>Como funciona na prática</h2>
+<ol>
+<li><strong>Criação.</strong> No provisionamento, o Tenant Service cria o schema <code>tenant_&lt;id&gt;</code>, aplica nele todas as migrações de domínio e registra o nome do schema no catálogo (<code>tenancy.tenants</code>).</li>
+<li><strong>Nome do schema.</strong> Sempre <code>tenant_&lt;id&gt;</code>, onde <code>&lt;id&gt;</code> é o identificador imutável do tenant. Nunca é derivado do nome ou slug do cliente, que podem mudar.</li>
+<li><strong>Cada requisição.</strong> O pacote comum lê o tenant do token, busca o schema no catálogo (com cache) e executa <code>SET LOCAL search_path TO tenant_&lt;id&gt;</code> <strong>dentro da transação</strong>.</li>
+<li><strong>Nunca a partir da requisição.</strong> O schema vem só do token validado. Nenhum parâmetro de URL, corpo ou cabeçalho escolhe o schema.</li>
+<li><strong>Sem SQL com nome de schema montado à mão.</strong> O código usa o contexto do pacote comum; concatenar nome de schema em SQL é proibido.</li>
+<li><strong>Migrações.</strong> Toda migração de domínio roda em todos os schemas de tenant listados no catálogo (ver <a href="#p-DevOps-Migracoes-de-Banco">Migrações de Banco</a>).</li>
+<li><strong>Exclusão.</strong> Ao fim do período de retenção, <code>DROP SCHEMA tenant_&lt;id&gt; CASCADE</code> (ver <a href="#p-Tenants">Tenants</a>).</li>
+</ol>
+<blockquote class="note">
+<p><strong>Atenção com pool de conexões.</strong> Use sempre <code>SET LOCAL</code> dentro de uma transação. Um <code>SET search_path</code> sem <code>LOCAL</code> fica preso na conexão e pode vazar para a próxima requisição de outro cliente que reutilizar a mesma conexão do pool.</p>
+</blockquote>
+<h2>Permissões no banco</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Usuário de banco</th>
+<th>Acesso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authentication</td>
+<td><code>cp_identity.auth</code></td>
+</tr>
+<tr>
+<td>User</td>
+<td><code>cp_identity.identity</code></td>
+</tr>
+<tr>
+<td>RBAC</td>
+<td><code>cp_identity.rbac</code></td>
+</tr>
+<tr>
+<td>Tenant</td>
+<td><code>civitas_db.tenancy</code> e permissão para criar e migrar schemas <code>tenant_*</code></td>
+</tr>
+<tr>
+<td>Core</td>
+<td>Schemas <code>tenant_*</code> do <code>civitas_db</code>; leitura do catálogo e escrita em <code>tenancy.platform_audit_events</code></td>
+</tr>
+<tr>
+<td>Outbox relay</td>
+<td>Leitura e marcação dos <code>audit_outbox</code> de todos os schemas de serviço</td>
+</tr>
+</tbody>
+</table></div>
+<p>Não há foreign key nem join entre schemas de serviços diferentes. A referência é feita pelo ID e validada por API.</p>
+<h2>Testes obrigatórios de isolamento</h2>
+<ul>
+<li>Requisição com token do tenant A não lê nenhum dado do schema do tenant B, mesmo alterando IDs na URL.</li>
+<li>Duas requisições seguidas de tenants diferentes na mesma conexão do pool usam cada uma o seu schema.</li>
+<li>Requisição sem tenant no token não acessa nenhum schema de tenant.</li>
+</ul>
+<h2>Limites e evolução</h2>
+<p>O modelo de schema por tenant atende bem centenas de clientes no mesmo banco. Dois caminhos ficam previstos para quando o volume exigir, sem mudar o código dos serviços:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Evolução</th>
+<th>Campo no catálogo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cliente muito grande ou com exigência contratual</td>
+<td>Mover o schema dele para um banco ou servidor dedicado</td>
+<td><code>isolation_level = dedicated_db</code></td>
+</tr>
+<tr>
+<td>Eventos brutos em volume muito alto</td>
+<td>Armazenar em Azure Data Explorer, um database por tenant</td>
+<td>A definir com a camada de integração</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Arquitetura-Eventos"><header class="page-head"><p class="crumb">Arquitetura</p><h1>Eventos</h1></header><div class="prose"><p>O Service Bus carrega <strong>avisos de que algo mudou</strong> no plano de controle. Dados pesados dos clientes não passam por ele.</p>
+<h2>Como um evento nasce</h2>
+<ol>
+<li>O serviço altera o próprio banco e grava o evento na tabela <code>audit_outbox</code> do seu schema, <strong>na mesma transação</strong>.</li>
+<li>O Outbox relay lê os <code>audit_outbox</code> de todos os serviços e publica no Service Bus.</li>
+<li>Depois de publicado, o registro é marcado como enviado.</li>
+</ol>
+<p>Assim, um evento só existe se a alteração realmente aconteceu, e nenhum evento se perde se o Service Bus ou o Core estiverem fora do ar.</p>
+<h2>Tópicos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tópico</th>
+<th>Conteúdo</th>
+<th>Assinantes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>civitas-tenant</code></td>
+<td>Ciclo de vida do tenant</td>
+<td>Authentication (cache de tenants), Core</td>
+</tr>
+<tr>
+<td><code>civitas-audit</code></td>
+<td>Login, sessões, usuários, papéis</td>
+<td>Core (grava em <code>audit_events</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Catálogo de eventos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Evento</th>
+<th>Publica</th>
+<th>Consome</th>
+<th>Para quê</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant.created</code></td>
+<td>Tenant</td>
+<td>Authentication, Core</td>
+<td>Atualizar o cache de tenants; auditoria</td>
+</tr>
+<tr>
+<td><code>tenant.suspended</code></td>
+<td>Tenant</td>
+<td>Authentication, Core</td>
+<td>Bloquear logins na hora; auditoria</td>
+</tr>
+<tr>
+<td><code>tenant.reactivated</code></td>
+<td>Tenant</td>
+<td>Authentication, Core</td>
+<td>Liberar logins; auditoria</td>
+</tr>
+<tr>
+<td><code>tenant.decommissioned</code></td>
+<td>Tenant</td>
+<td>Authentication, Core</td>
+<td>Bloquear logins e iniciar a retenção</td>
+</tr>
+<tr>
+<td><code>tenant.modules_changed</code></td>
+<td>Tenant</td>
+<td>Core</td>
+<td>Habilitar ou desabilitar módulos</td>
+</tr>
+<tr>
+<td><code>auth.login_succeeded</code></td>
+<td>Authentication</td>
+<td>Core</td>
+<td>Auditoria de acesso</td>
+</tr>
+<tr>
+<td><code>auth.login_failed</code></td>
+<td>Authentication</td>
+<td>Core</td>
+<td>Auditoria de acesso</td>
+</tr>
+<tr>
+<td><code>session.revoked</code></td>
+<td>Authentication</td>
+<td>Core</td>
+<td>Auditoria, incluindo usuário desativado no IdP</td>
+</tr>
+<tr>
+<td><code>user.invited</code></td>
+<td>User</td>
+<td>Core</td>
+<td>Auditoria; no futuro, e-mail de convite pelo Notification</td>
+</tr>
+<tr>
+<td><code>user.activated</code></td>
+<td>User</td>
+<td>Core</td>
+<td>Auditoria do primeiro login</td>
+</tr>
+<tr>
+<td><code>user.disabled</code></td>
+<td>User</td>
+<td>Core</td>
+<td>Auditoria</td>
+</tr>
+<tr>
+<td><code>role.assigned</code></td>
+<td>RBAC</td>
+<td>Core</td>
+<td>Auditoria de mudança de permissão</td>
+</tr>
+<tr>
+<td><code>role.revoked</code></td>
+<td>RBAC</td>
+<td>Core</td>
+<td>Auditoria de mudança de permissão</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Onde a auditoria é gravada</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Evento</th>
+<th>Destino</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Com <code>tenant_id</code></td>
+<td><code>audit_events</code> no schema <code>tenant_&lt;id&gt;</code> do tenant</td>
+</tr>
+<tr>
+<td>Sem <code>tenant_id</code> (ações globais da ARX, criação de tenant antes do schema existir)</td>
+<td>Auditoria global no schema <code>tenancy</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Formato comum</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event_id</code></td>
+<td>ID único, usado para descartar duplicatas</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>Nome do evento, por exemplo <code>tenant.created</code></td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td>Tenant afetado; vazio para ações globais</td>
+</tr>
+<tr>
+<td><code>actor</code></td>
+<td><code>user_id</code> e se é usuário ARX</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td>Quando aconteceu</td>
+</tr>
+<tr>
+<td><code>correlation_id</code></td>
+<td>Liga o evento à requisição original nos logs</td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td>IDs e o que mudou; nenhum dado pessoal além disso</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras para os consumidores</h2>
+<ul>
+<li><strong>Entrega pelo menos uma vez:</strong> o mesmo evento pode chegar duas vezes. Todo consumidor verifica o <code>event_id</code> antes de processar.</li>
+<li><strong>Dead-letter queue:</strong> mensagem que falha várias vezes vai para a DLQ e gera alerta. Nunca é descartada em silêncio.</li>
+<li><strong>Ordem por tenant:</strong> o <code>tenant_id</code> é usado como sessão do Service Bus, para que, por exemplo, <code>tenant.suspended</code> nunca seja processado antes de <code>tenant.created</code>.</li>
+</ul>
+<h2>O que não passa pelo Service Bus</h2>
+<ul>
+<li>Dados de monitoramento e de integrações (alto volume): Event Hubs, quando os conectores chegarem.</li>
+<li>Consultas que precisam de resposta imediata: chamada HTTP à API do outro serviço.</li>
+<li>Mudança de papel no token: entra na próxima renovação do token.</li>
+</ul></div></section><section class="page" id="p-Decisoes"><header class="page-head"><h1>Decisões de Arquitetura</h1></header><div class="prose"><p>Toda decisão técnica relevante vira uma página aqui, com contexto, decisão, consequências e alternativas. Use o <a href="#p-Decisoes-Modelo-ADR">modelo</a>. Uma decisão nunca é apagada: quando muda, a antiga fica com status <strong>Substituída</strong> e aponta para a nova.</p>
+<p>Status possíveis: <strong>Proposta</strong>, <strong>Aprovada</strong>, <strong>Substituída</strong>, <strong>Rejeitada</strong>. Decisões internas de arquitetura são aprovadas pelo gestor do projeto; decisões que afetam regra de negócio, custo ou prazo são aprovadas pela diretoria.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Decisão</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado">ADR-001</a></td>
+<td>Identidade e catálogo nos dois bancos existentes</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-002-Um-Schema-por-Tenant">ADR-002</a></td>
+<td>Dados de domínio em um schema por tenant</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-003-Infraestrutura-Compartilhada">ADR-003</a></td>
+<td>Infraestrutura de apoio compartilhada</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-004-Login-Federado">ADR-004</a></td>
+<td>Login federado com Entra ID e Google</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-005-Contas-Break-Glass">ADR-005</a></td>
+<td>Contas locais break-glass no Authentication Service</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-006-Identificadores-Imutaveis">ADR-006</a></td>
+<td>Identificadores imutáveis</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-007-Token-e-Revogacao">ADR-007</a></td>
+<td>Token Civitas curto com revalidação no IdP</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-008-Claims-do-Token">ADR-008</a></td>
+<td>Claims do token Civitas</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-009-Repositorios-e-Deploy">ADR-009</a></td>
+<td>Dois repositórios, um Container App por serviço</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-010-Comunicacao-entre-Servicos">ADR-010</a></td>
+<td>Comunicação entre serviços: HTTP para consultas, outbox e Service Bus para eventos</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-011-Acesso-ARX-Auditado">ADR-011</a></td>
+<td>Acesso da ARX auditado</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-012-API-Gateway-Depois">ADR-012</a></td>
+<td>API Gateway entra depois</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-013-Cache-de-Tenants">ADR-013</a></td>
+<td>Cache de tenants no Authentication</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td><a href="#p-Decisoes-ADR-014-Admin-como-Usuario-Normal">ADR-014</a></td>
+<td>Administrador do cliente como usuário normal</td>
+<td>Aprovada</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-Modelo-ADR"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-000 — Título curto da decisão</h1></header><div class="prose"><blockquote class="note">
+<p>Copie esta página, troque o número e o título. Uma decisão por página.</p>
+</blockquote>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>AAAA-MM-DD</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Nome</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Nome (diretoria, quando afeta custo, prazo ou regra de negócio)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Qual problema ou necessidade levou a esta decisão. Cite regras de negócio (RN-xx) quando houver.</p>
+<h2>Decisão</h2>
+<p>O que foi decidido, em uma ou duas frases afirmativas.</p>
+<h2>Consequências</h2>
+<p>O que fica mais fácil, o que fica mais difícil, o que precisa ser feito por causa disso.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-001 — Identidade e catálogo nos dois bancos existentes</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Já existem dois bancos em uso: <code>cp_identity</code> (civitas-auth) e <code>civitas_db</code> (civitas-api). Tenants, usuários, papéis e configurações de login têm pouco volume e são consultados em toda requisição.</p>
+<h2>Decisão</h2>
+<p>Manter os dois bancos, organizados por schema: <code>cp_identity</code> com <code>auth</code>, <code>identity</code> e <code>rbac</code>; <code>civitas_db</code> com <code>tenancy</code> (catálogo global). Cada serviço tem um usuário de banco com acesso só ao próprio schema. Tabelas compartilhadas com dado de tenant têm <code>tenant_id</code> e Row-Level Security. Não há foreign key nem join entre schemas de serviços diferentes.</p>
+<h2>Consequências</h2>
+<p>Cada serviço é dono dos próprios dados sem migração de banco. O banco bloqueia acesso entre tenants mesmo se o código esquecer o filtro.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Um único banco com todos os schemas</td>
+<td>Exigiria migrar os bancos existentes sem ganho nesta fase</td>
+</tr>
+<tr>
+<td>Um banco por serviço</td>
+<td>Mais custo e operação para o tamanho atual do time</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-002-Um-Schema-por-Tenant"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-002 — Dados de domínio em um schema por tenant</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>O volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança. Dados de clientes diferentes não podem crescer nas mesmas tabelas.</p>
+<h2>Decisão</h2>
+<p>Cada tenant tem o seu próprio schema <code>tenant_&lt;id&gt;</code> no banco <code>civitas_db</code>, criado no provisionamento. Todos os dados de domínio do cliente ficam nele. O schema ativo é definido por <code>SET LOCAL search_path</code> a partir do tenant do token, dentro da transação. Detalhes em <a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a>.</p>
+<h2>Consequências</h2>
+<p>Isolamento físico de tabelas por cliente, exclusão e exportação simples, índices menores. Em troca, toda migração de domínio precisa rodar em todos os schemas de tenant, o que exige automação no pipeline.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tabelas compartilhadas com coluna <code>tenant_id</code></td>
+<td>Volume de todos os clientes nas mesmas tabelas; exclusão de um cliente vira <code>DELETE</code> em massa</td>
+</tr>
+<tr>
+<td>Um banco por tenant</td>
+<td>Mais custo e operação agora; fica como evolução para clientes grandes (<code>dedicated_db</code>)</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-003-Infraestrutura-Compartilhada"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-003 — Infraestrutura de apoio compartilhada</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Cache, busca e mensageria não justificam uma instância por tenant.</p>
+<h2>Decisão</h2>
+<p>Redis com prefixo de chave por tenant, busca com índice por tenant e mensageria com <code>tenant_id</code> obrigatório em toda mensagem.</p>
+<h2>Consequências</h2>
+<p>Segue a tabela de isolamento do CAB.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-004-Login-Federado"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-004 — Login federado com Entra ID e Google</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-01: o cliente não cria conta nova.</p>
+<h2>Decisão</h2>
+<p>Aplicativo multi-tenant no Entra ID e OIDC do Google. O Civitas não guarda senha de usuário de cliente.</p>
+<h2>Consequências</h2>
+<p>Segurança e MFA ficam com o IdP do cliente.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-005-Contas-Break-Glass"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-005 — Contas locais break-glass no Authentication Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-02 e RN-03: contas locais só para administração e recuperação.</p>
+<h2>Decisão</h2>
+<p>Senha com hash Argon2id e MFA TOTP obrigatório (<code>mfa_policy</code>, <code>mfa_challenges</code>); segredo TOTP no Key Vault.</p>
+<h2>Consequências</h2>
+<p>Não depende de IdP externo para recuperar acesso.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-006-Identificadores-Imutaveis"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-006 — Identificadores imutáveis</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-06 e RN-07: nada de vínculo por domínio ou e-mail.</p>
+<h2>Decisão</h2>
+<p>Organização Entra = <code>tid</code>; usuário Entra = <code>tid</code> + <code>oid</code>; usuário Google = <code>sub</code>. Organização Google = domínio (<code>hd</code>), conforme RN-16.</p>
+<h2>Consequências</h2>
+<p>Mudança de e-mail ou domínio no cliente não quebra o acesso. Para Google, o token não traz identificador imutável da empresa, então a organização é vinculada pelo domínio (RN-16). Se a empresa trocar de domínio, o administrador do cliente atualiza o domínio no Civitas; os usuários continuam vinculados pelo <code>sub</code>, que não muda.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-007-Token-e-Revogacao"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-007 — Token Civitas curto com revalidação no IdP</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Diretoria, 2026-10-09 (P-01)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-08: usuário desativado no IdP perde o acesso sem ação manual.</p>
+<h2>Decisão</h2>
+<p>O Civitas emite JWT curto, assinado com chave no Key Vault. A cada renovação, revalida junto ao IdP; recusa do IdP revoga a sessão. A duração é um parâmetro de configuração, com padrão de 10 minutos.</p>
+<h2>Consequências</h2>
+<p>Janela máxima de exposição de 10 minutos (RN-14). A renovação é silenciosa: o usuário não precisa entrar de novo a cada 10 minutos, só perde o acesso quando o IdP recusa. Por isso uma tela aberta numa TV do SOC continua funcionando enquanto o usuário estiver ativo no IdP. O modo painel (RN-15) muda o tempo de inatividade, nunca a revalidação no IdP (ver P-10).</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-008-Claims-do-Token"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-008 — Claims do token Civitas</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Todo serviço precisa saber usuário, tenant e papéis sem consultar outro serviço.</p>
+<h2>Decisão</h2>
+<p>Claims <code>sub</code>, <code>tid</code> (tenant ativo), <code>roles</code>, <code>arx</code>.</p>
+<h2>Consequências</h2>
+<p>Mudança de papel vale na próxima renovação. O <code>tid</code> do token é a única fonte para escolher o schema do tenant.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-009-Repositorios-e-Deploy"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-009 — Dois repositórios, um Container App por serviço</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-11 exige serviços separados. Já existem os repositórios <code>civitas-auth</code> e <code>civitas-api</code>, e o time tem dois desenvolvedores.</p>
+<h2>Decisão</h2>
+<p>Manter os dois repositórios: <code>civitas-auth</code> com Authentication, User e RBAC; <code>civitas-api</code> com Tenant e Core. Cada serviço é publicado como um Container App próprio. Token, contexto de tenant, logs e auditoria ficam em um pacote comum no Azure Artifacts, usado pelos dois repositórios.</p>
+<h2>Consequências</h2>
+<p>Atende a RN-11 sem migração de repositório. Serviços que hoje são módulos precisam trocar chamadas internas por HTTP.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monorepo com todos os serviços</td>
+<td>Migração sem entrega visível nesta fase; pode ser reavaliada depois</td>
+</tr>
+<tr>
+<td>Um repositório por serviço</td>
+<td>Multiplica pipelines e configuração para um time de dois devs</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-010-Comunicacao-entre-Servicos"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-010 — Comunicação entre serviços: HTTP para consultas, outbox e Service Bus para eventos</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Serviços precisam consultar uns aos outros e avisar sobre mudanças, sem perder eventos e sem criar dependência de disponibilidade entre eles.</p>
+<h2>Decisão</h2>
+<p>Consultas imediatas por HTTP com <code>X-Civitas-Service-Token</code>. Avisos de mudança gravados em <code>audit_outbox</code> na mesma transação da alteração; um Outbox relay (Container App no <code>civitas-api</code>) publica no Service Bus, nos tópicos <code>civitas-tenant</code> e <code>civitas-audit</code>. Catálogo de eventos em <a href="#p-Arquitetura-Eventos">Eventos</a>.</p>
+<h2>Consequências</h2>
+<p>Nenhum evento se perde; serviços não precisam estar no ar ao mesmo tempo. Consumidores precisam ser idempotentes, e a DLQ precisa de alerta.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Publicar direto no Service Bus no código</td>
+<td>Evento pode ser publicado sem a alteração ter sido gravada, ou o contrário</td>
+</tr>
+<tr>
+<td>Só chamadas HTTP</td>
+<td>Acopla a disponibilidade dos serviços e perde auditoria quando o Core está fora</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-011-Acesso-ARX-Auditado"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-011 — Acesso da ARX auditado</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>RN-09: a ARX acessa qualquer tenant.</p>
+<h2>Decisão</h2>
+<p>Papel de escopo global; toda ação de usuário ARX em tenant de cliente gera auditoria marcada.</p>
+<h2>Consequências</h2>
+<p>Rastro exigível por clientes de segurança.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-012-API-Gateway-Depois"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-012 — API Gateway entra depois</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Proposta</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>Hoje há poucos serviços expostos ao front.</p>
+<h2>Decisão</h2>
+<p>Validação de token e tenant pelo pacote comum em cada serviço; API Management (ou Kong) quando houver mais serviços expostos.</p>
+<h2>Consequências</h2>
+<p>Não trava a entrega atual; o pacote é reaproveitado pelo gateway.</p>
+<h2>Alternativas consideradas</h2>
+<p>A preencher.</p></div></section><section class="page" id="p-Decisoes-ADR-013-Cache-de-Tenants"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-013 — Cache de tenants no Authentication</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>No desenho inicial, todo login consultava o Tenant Service. Se o <code>civitas-api</code> caísse, ninguém entraria na plataforma, nem a ARX para resolver o problema.</p>
+<h2>Decisão</h2>
+<p>O Authentication mantém a tabela <code>auth.tenant_status_cache</code>, atualizada pelos eventos do tópico <code>civitas-tenant</code>. O login consulta o cache; <code>GET /internal/tenants/{id}</code> é usado só quando o tenant não está no cache. O login local da ARX (break-glass) nunca depende do Tenant Service.</p>
+<h2>Consequências</h2>
+<p>Login independente do <code>civitas-api</code>. Uma suspensão de tenant leva o tempo de entrega do evento (segundos) para valer no login.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Consulta HTTP a cada login</td>
+<td>Login para se o <code>civitas-api</code> cair</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Decisoes-ADR-014-Admin-como-Usuario-Normal"><header class="page-head"><p class="crumb">Decisoes</p><h1>ADR-014 — Administrador do cliente como usuário normal</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status</td>
+<td>Aprovada</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>2026-10</td>
+</tr>
+<tr>
+<td>Responsável</td>
+<td>Jonas Alfonso</td>
+</tr>
+<tr>
+<td>Aprovado por</td>
+<td>Jonas Alfonso, 2026-10-08</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Contexto</h2>
+<p>O desenho inicial tinha <code>tenancy.tenant_admin_users</code>, separado de <code>identity.users</code>: duas fontes de verdade sobre quem é usuário.</p>
+<h2>Decisão</h2>
+<p>O administrador local do cliente é criado no provisionamento como usuário normal em <code>identity.users</code>, com credencial break-glass em <code>auth.local_credentials</code> e o papel Tenant Admin em <code>rbac.tenant_memberships</code>. A tabela <code>tenancy.tenant_admin_users</code> é removida; o provisionamento registra a criação em <code>tenancy.provisioning_steps</code>.</p>
+<h2>Consequências</h2>
+<p>Uma única fonte de verdade para usuários e permissões. O provisionamento passa a chamar User, Authentication e RBAC.</p>
+<h2>Alternativas consideradas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alternativa</th>
+<th>Por que não</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manter <code>tenant_admin_users</code> no <code>tenancy</code></td>
+<td>Duplica usuário e permissão entre dois serviços e dois bancos</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Servicos"><header class="page-head"><h1>Serviços</h1></header><div class="prose"><p>Uma página por serviço, sempre no mesmo formato (<a href="#p-Servicos-Modelo-de-Servico">modelo</a>). A página é atualizada junto com o pull request que muda o serviço.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Serviço</th>
+<th>Responsabilidade</th>
+<th>Repositório</th>
+<th>Banco · schema</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#p-Servicos-Authentication">Authentication</a></td>
+<td>Login federado e local, MFA, token Civitas, JWKS, sessões, cache de tenants</td>
+<td><code>civitas-auth</code></td>
+<td><code>cp_identity</code> · <code>auth</code></td>
+<td>Em desenvolvimento</td>
+</tr>
+<tr>
+<td><a href="#p-Servicos-User">User</a></td>
+<td>Usuários e convites</td>
+<td><code>civitas-auth</code></td>
+<td><code>cp_identity</code> · <code>identity</code></td>
+<td>Em desenvolvimento</td>
+</tr>
+<tr>
+<td><a href="#p-Servicos-RBAC">RBAC</a></td>
+<td>Papéis, permissões e vínculos usuário–tenant</td>
+<td><code>civitas-auth</code></td>
+<td><code>cp_identity</code> · <code>rbac</code></td>
+<td>Em desenvolvimento</td>
+</tr>
+<tr>
+<td><a href="#p-Servicos-Tenant">Tenant</a></td>
+<td>Ciclo de vida, provisionamento, catálogo e criação do schema do tenant</td>
+<td><code>civitas-api</code></td>
+<td><code>civitas_db</code> · <code>tenancy</code></td>
+<td>Em desenvolvimento</td>
+</tr>
+<tr>
+<td><a href="#p-Servicos-Core">Core</a></td>
+<td>Dados de domínio: auditoria e monitoring</td>
+<td><code>civitas-api</code></td>
+<td><code>civitas_db</code> · <code>tenant_&lt;id&gt;</code> (um por tenant)</td>
+<td>Em desenvolvimento</td>
+</tr>
+<tr>
+<td><a href="#p-Servicos-Outbox-Relay">Outbox relay</a></td>
+<td>Publica os <code>audit_outbox</code> no Service Bus</td>
+<td><code>civitas-api</code></td>
+<td>Leitura dos <code>audit_outbox</code></td>
+<td>A fazer</td>
+</tr>
+</tbody>
+</table></div>
+<p>Cada serviço é publicado como um Container App próprio, mesmo quando divide repositório com outros (<a href="#p-Decisoes-ADR-009-Repositorios-e-Deploy">ADR-009</a>).</p>
+<h2>Requisitos para todos os serviços</h2>
+<ul>
+<li>Segredos só no Key Vault, via identidade gerenciada; o <code>X-Civitas-Service-Token</code> também.</li>
+<li>Usar o pacote comum para validar token, aplicar o contexto de tenant, logar e auditar.</li>
+<li>Serviços que acessam schema de tenant usam sempre <code>SET LOCAL search_path</code> dentro da transação, definido pelo token.</li>
+<li>Usuário de banco com acesso só ao próprio schema; sem foreign key ou join entre schemas de serviços diferentes.</li>
+<li>Todo log tem <code>correlation_id</code>, <code>tenant_id</code> e <code>user_id</code>, enviado ao Application Insights.</li>
+<li>Ações sensíveis gravam em <code>audit_outbox</code> na mesma transação.</li>
+<li>Especificação OpenAPI publicada e linkada na página do serviço.</li>
+<li>Teste de isolamento obrigatório: usuário do tenant A não lê nada do tenant B.</li>
+</ul></div></section><section class="page" id="p-Servicos-Modelo-de-Servico"><header class="page-head"><p class="crumb">Servicos</p><h1>Nome do Serviço</h1></header><div class="prose"><blockquote class="note">
+<p>Copie esta página para documentar um serviço novo.</p>
+</blockquote>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Nome</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-auth</code> ou <code>civitas-api</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>Nome</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>banco</code> · <code>schema</code></td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>Link</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento / Em produção</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>O que o serviço faz e, em uma frase, o que ele <strong>não</strong> faz.</p>
+<h2>Dados</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+<th>Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Endpoints</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Caminho</th>
+<th>Faz</th>
+<th>Permissão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Chamadas e eventos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Para / de</th>
+<th>Como</th>
+<th>Quando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<p>Regras que não estão óbvias no código.</p>
+<h2>Pontos a confirmar</h2>
+<p>Dúvidas abertas com o time, com link para <a href="#p-Pendencias">Pendências</a>.</p>
+<h2>Como testar</h2>
+<p>Passos para verificar que funciona, incluindo o teste de isolamento.</p></div></section><section class="page" id="p-Servicos-Authentication"><header class="page-head"><p class="crumb">Servicos</p><h1>Authentication Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Felipe</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-auth</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>Authentication</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>cp_identity</code> · <code>auth</code></td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Responde: quem é você e esta sessão ainda vale? Faz o login federado (Entra ID, Google, SAML) e local, aplica MFA, emite e renova o token Civitas, publica as chaves (JWKS) e revoga sessões. <strong>Não</strong> cuida de cadastro de usuários (User), permissões (RBAC) nem de tenants (Tenant).</p>
+<h2>Como o tenant é identificado no login</h2>
+<p>O usuário clica em "Entrar com Microsoft" sem informar o tenant. O token do Entra traz o <code>tid</code> da organização; o serviço procura o tenant Civitas vinculado a esse <code>tid</code> e confirma no <strong>cache de tenants</strong> (<code>tenant_status_cache</code>) que ele está ativo. Só se o tenant não estiver no cache, consulta o Tenant Service (<code>GET /internal/tenants/{id}</code>). Sem vínculo ativo, o login é recusado com "organização não habilitada".</p>
+<h2>Dados (schema <code>auth</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sessions</code></td>
+<td>Sessões ativas e revogadas, tenant ativo, referência criptografada ao refresh token do IdP</td>
+</tr>
+<tr>
+<td><code>mfa_challenges</code></td>
+<td>Desafios de MFA em andamento</td>
+</tr>
+<tr>
+<td><code>mfa_policy</code></td>
+<td>Política de MFA por tenant</td>
+</tr>
+<tr>
+<td><code>auth_config</code></td>
+<td>Configuração de login por tenant</td>
+</tr>
+<tr>
+<td><code>authorized_domains</code></td>
+<td>Domínios e organizações de IdP autorizados por tenant</td>
+</tr>
+<tr>
+<td><code>saml_providers</code></td>
+<td>Provedores SAML configurados pelo cliente</td>
+</tr>
+<tr>
+<td><code>local_credentials</code></td>
+<td>Senha (Argon2id) e referência ao segredo TOTP dos administradores locais (break-glass)</td>
+</tr>
+<tr>
+<td><code>tenant_status_cache</code></td>
+<td>Status de cada tenant, atualizado pelos eventos <code>tenant.*</code> (<a href="#p-Decisoes-ADR-013-Cache-de-Tenants">ADR-013</a>)</td>
+</tr>
+<tr>
+<td><code>audit_outbox</code></td>
+<td>Eventos de auditoria a publicar para o Core</td>
+</tr>
+</tbody>
+</table></div>
+<p>Chaves de assinatura no Key Vault, publicadas em <code>/.well-known/jwks.json</code>.</p>
+<h2>Endpoints</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Caminho</th>
+<th>Faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/auth/login/{provider}</code></td>
+<td>Inicia o login (entra, google, saml)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/auth/callback/{provider}</code></td>
+<td>Recebe o retorno do IdP, resolve tenant e usuário, cria a sessão</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/local/login</code></td>
+<td>Login break-glass; sempre segue para o MFA</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/local/mfa</code></td>
+<td>Valida o código TOTP e cria a sessão</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/token/refresh</code></td>
+<td>Renova o token Civitas e revalida no IdP</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/tenant/switch</code></td>
+<td>Troca o tenant ativo, se houver vínculo</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/logout</code></td>
+<td>Encerra a sessão</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/auth/sessions/{id}/revoke</code></td>
+<td>Revogação administrativa</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/.well-known/jwks.json</code></td>
+<td>Chaves públicas para validar tokens</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Chamadas internas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Para</th>
+<th>Como</th>
+<th>Quando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User</td>
+<td>HTTP + <code>X-Civitas-Service-Token</code></td>
+<td>Encontrar ou vincular o usuário no login</td>
+</tr>
+<tr>
+<td>RBAC</td>
+<td>HTTP + <code>X-Civitas-Service-Token</code></td>
+<td>Buscar os papéis do usuário no tenant para montar o token</td>
+</tr>
+<tr>
+<td>Tenant</td>
+<td><code>GET /internal/tenants/{id}</code></td>
+<td>Só quando o tenant não está no cache</td>
+</tr>
+<tr>
+<td>Service Bus (assina <code>civitas-tenant</code>)</td>
+<td>Evento</td>
+<td>Atualizar o cache de tenants</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<ul>
+<li>
+<p>Um tenant pode ter várias organizações Entra (vários <code>tid</code>) e domínios Google autorizados em <code>authorized_domains</code> (RN-20, RN-16).</p>
+</li>
+<li>
+<p>Depois do primeiro login, a busca do usuário é sempre pelo identificador imutável do IdP (<code>tid</code> + <code>oid</code> no Entra, <code>sub</code> no Google). O e-mail nunca identifica.</p>
+</li>
+<li>A duração do token é parâmetro de configuração (padrão 10 minutos, ver P-01).</li>
+<li>Renovação recusada pelo IdP por usuário desativado revoga a sessão. Falha de rede no IdP não revoga.</li>
+<li>Login local: tentativas erradas seguidas bloqueiam a conta temporariamente (valores em configuração).</li>
+</ul>
+<h2>Eventos publicados</h2>
+<p><code>auth.login_succeeded</code>, <code>auth.login_failed</code>, <code>session.revoked</code> (via <code>audit_outbox</code>). Ver <a href="#p-Arquitetura-Eventos">Eventos</a>.</p></div></section><section class="page" id="p-Servicos-User"><header class="page-head"><p class="crumb">Servicos</p><h1>User Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Wanderson (revisão do Felipe)</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-auth</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>User</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>cp_identity</code> · <code>identity</code></td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Guarda quem são os usuários e cuida dos convites. O usuário é global: uma pessoa tem um único cadastro e pode ter acesso a mais de um tenant. <strong>Não</strong> guarda papéis (RBAC) nem credenciais (Authentication).</p>
+<h2>Dados (schema <code>identity</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td>Cadastro do usuário e status, incluindo administradores locais e usuários ARX</td>
+</tr>
+<tr>
+<td><code>external_identities</code></td>
+<td>Vínculo imutável com o IdP: <code>tid</code> + <code>oid</code> (Entra) ou <code>sub</code> (Google); único por provedor</td>
+</tr>
+<tr>
+<td><code>invitations</code></td>
+<td>Convites pendentes por tenant e e-mail, com os papéis a atribuir</td>
+</tr>
+<tr>
+<td><code>audit_outbox</code></td>
+<td>Eventos de auditoria a publicar para o Core</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Endpoints</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Caminho</th>
+<th>Faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/tenants/{tenantId}/invitations</code></td>
+<td>Convida um usuário por e-mail, já com papéis</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/tenants/{tenantId}/users</code></td>
+<td>Lista usuários do tenant</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/tenants/{tenantId}/users/{userId}</code></td>
+<td>Altera nome ou status</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/me</code></td>
+<td>Dados do usuário logado</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/me/tenants</code></td>
+<td>Tenants a que o usuário tem acesso</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/internal/users/resolve</code></td>
+<td>Interno (Authentication): encontra ou vincula o usuário no login</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<ul>
+<li>Primeiro login de um convidado: com convite pendente para aquele e-mail no tenant do <code>tid</code>, cria a <code>external_identities</code>, ativa o usuário, aceita o convite e pede ao RBAC o vínculo com os papéis do convite. Sem convite, o login é recusado.</li>
+<li>Depois disso, mudar o e-mail no IdP do cliente não afeta o acesso.</li>
+<li>Usuários ARX não precisam de vínculo por tenant; o acesso vem do papel global no RBAC.</li>
+<li>Um usuário de cliente pode ter vínculo com mais de um tenant (RN-17). Depois do login, ele escolhe o tenant ativo em <code>/me/tenants</code> e troca por <code>/auth/tenant/switch</code>.</li>
+</ul>
+<h2>Eventos publicados</h2>
+<p><code>user.invited</code>, <code>user.activated</code>, <code>user.disabled</code> (via <code>audit_outbox</code>).</p></div></section><section class="page" id="p-Servicos-RBAC"><header class="page-head"><p class="crumb">Servicos</p><h1>RBAC Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Wanderson (revisão do Felipe)</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-auth</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>RBAC</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>cp_identity</code> · <code>rbac</code></td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Responde: o que este usuário pode fazer neste tenant? Guarda papéis, permissões e as atribuições de papel por tenant. A checagem acontece em cada serviço, com os papéis que vêm no token.</p>
+<h2>Papéis iniciais (proposta, validar em P-04 e P-10)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Papel</th>
+<th>Escopo</th>
+<th>Pode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ARX Platform Admin</td>
+<td>Todos os tenants</td>
+<td>Tudo, inclusive criar, suspender e desativar tenants</td>
+</tr>
+<tr>
+<td>ARX Operator</td>
+<td>Todos os tenants</td>
+<td>Operar e configurar qualquer tenant, sem criar nem desativar</td>
+</tr>
+<tr>
+<td>Tenant Admin</td>
+<td>Um tenant</td>
+<td>Domínios, SSO, convites, papéis do tenant</td>
+</tr>
+<tr>
+<td>Tenant Analyst</td>
+<td>Um tenant</td>
+<td>Módulos contratados e relatórios</td>
+</tr>
+<tr>
+<td>Tenant Viewer</td>
+<td>Um tenant</td>
+<td>Somente leitura</td>
+</tr>
+<tr>
+<td>Tenant Panel (proposta, P-10)</td>
+<td>Um tenant</td>
+<td>Somente leitura de painéis, para TV do SOC; sessão sem expiração por inatividade</td>
+</tr>
+</tbody>
+</table></div>
+<p>Os papéis são criados por migração (dados iniciais), não fixos no código. Permissões no formato <code>recurso:ação</code> (<code>tenant:create</code>, <code>users:invite</code>, <code>sso:configure</code>, <code>roles:assign</code>, <code>reports:read</code>).</p>
+<h2>Dados (schema <code>rbac</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>roles</code></td>
+<td>Papéis</td>
+</tr>
+<tr>
+<td><code>role_permissions</code></td>
+<td>Permissões de cada papel</td>
+</tr>
+<tr>
+<td><code>tenant_memberships</code></td>
+<td>Vínculo usuário–tenant com os papéis dele, com <code>tenant_id</code> + Row-Level Security; papéis globais da ARX ficam com <code>tenant_id</code> vazio</td>
+</tr>
+<tr>
+<td><code>audit_outbox</code></td>
+<td>Eventos de auditoria a publicar para o Core</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Endpoints</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Caminho</th>
+<th>Faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/roles</code></td>
+<td>Lista papéis e permissões</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/tenants/{tenantId}/assignments</code></td>
+<td>Atribui papel a um usuário no tenant</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/tenants/{tenantId}/assignments/{id}</code></td>
+<td>Remove o papel</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/internal/users/{userId}/roles?tenant={tenantId}</code></td>
+<td>Interno (Authentication): papéis para montar o token</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<ul>
+<li>Cada serviço checa permissão pelo pacote comum (<code>require("users:invite")</code>), nunca pelo nome do papel.</li>
+<li>Um tenant sempre tem pelo menos um Tenant Admin; remover o último é recusado.</li>
+</ul>
+<h2>Eventos publicados</h2>
+<p><code>role.assigned</code>, <code>role.revoked</code> (via <code>audit_outbox</code>).</p></div></section><section class="page" id="p-Servicos-Tenant"><header class="page-head"><p class="crumb">Servicos</p><h1>Tenant Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Felipe</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-api</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>Tenant</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>civitas_db</code> · <code>tenancy</code> (catálogo) + criação dos schemas <code>tenant_&lt;id&gt;</code></td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Mantém o catálogo de todos os tenants, cuida do ciclo de vida (criação, suspensão, desativação) e <strong>cria o schema próprio de cada tenant</strong> no provisionamento. Ciclo de vida e passos de provisionamento em <a href="#p-Tenants">Tenants</a>; modelo de isolamento em <a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a>.</p>
+<h2>Dados (schema <code>tenancy</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenants</code></td>
+<td>Cadastro do tenant, status, nível de isolamento e <code>schema_name</code> (nome do schema do tenant)</td>
+</tr>
+<tr>
+<td><code>tenant_modules</code></td>
+<td>Módulos habilitados para o tenant</td>
+</tr>
+<tr>
+<td><code>tenant_contracts</code></td>
+<td>Dados de contrato e licença</td>
+</tr>
+<tr>
+<td><code>tenant_drafts</code></td>
+<td>Rascunhos de tenant ainda não provisionados (cadastro em andamento no SecOps)</td>
+</tr>
+<tr>
+<td><code>provisioning_steps</code></td>
+<td>Passos do provisionamento e status de cada um, para retomar após falha</td>
+</tr>
+<tr>
+<td><code>platform_audit_events</code></td>
+<td>Auditoria de ações sem tenant (ações globais da ARX)</td>
+</tr>
+<tr>
+<td><code>audit_outbox</code></td>
+<td>Eventos <code>tenant.*</code> a publicar</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Endpoints</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Caminho</th>
+<th>Faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/tenants</code></td>
+<td>Cria o tenant e inicia o provisionamento (ARX Platform Admin)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/tenants</code></td>
+<td>Lista tenants</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/tenants/{id}</code></td>
+<td>Detalhe e status</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/tenants/{id}/suspend</code> · <code>/reactivate</code> · <code>/decommission</code></td>
+<td>Ciclo de vida</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/internal/tenants/{id}</code></td>
+<td>Interno (Authentication e Core): status do tenant e nome do schema</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<ul>
+<li>O schema é sempre <code>tenant_&lt;id&gt;</code>, com o identificador imutável do tenant.</li>
+<li>Criar o schema e aplicar as migrações são passos idempotentes: rodar de novo depois de uma falha não quebra nada.</li>
+<li>O tenant só vai para <code>active</code> depois que o schema existe e está na versão atual das migrações.</li>
+</ul>
+<h2>Eventos publicados</h2>
+<p><code>tenant.created</code>, <code>tenant.suspended</code>, <code>tenant.reactivated</code>, <code>tenant.decommissioned</code>, <code>tenant.modules_changed</code> (tópico <code>civitas-tenant</code>).</p>
+<blockquote class="note">
+<p>O administrador do cliente não é guardado aqui: o Tenant Service pede ao User, Authentication e RBAC que o criem (<a href="#p-Decisoes-ADR-014-Admin-como-Usuario-Normal">ADR-014</a>).</p>
+</blockquote></div></section><section class="page" id="p-Servicos-Core"><header class="page-head"><p class="crumb">Servicos</p><h1>Core Service</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Felipe</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-api</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>Core</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td><code>civitas_db</code> · <code>tenant_&lt;id&gt;</code> (um schema por tenant)</td>
+</tr>
+<tr>
+<td>OpenAPI</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>Em desenvolvimento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Guarda e serve os dados de domínio de cada cliente. Hoje: auditoria e monitoring. Depois: ativos, findings e os dados dos módulos de produto. <strong>Todo dado do Core vive dentro do schema do tenant.</strong></p>
+<h2>Dados (em cada schema <code>tenant_&lt;id&gt;</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>audit_events</code></td>
+<td>Trilha de auditoria do tenant, alimentada pelos <code>audit_outbox</code> dos serviços</td>
+</tr>
+<tr>
+<td><code>monitoring_*</code></td>
+<td>Dados de monitoramento do tenant</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras de implementação</h2>
+<ul>
+<li>Toda consulta roda dentro de uma transação com <code>SET LOCAL search_path TO tenant_&lt;id&gt;</code>, com o tenant tirado do token pelo pacote comum.</li>
+<li>Nenhuma tabela do Core é criada no schema <code>public</code>.</li>
+<li>Novas tabelas de domínio são criadas por migração aplicada a todos os schemas de tenant.</li>
+</ul>
+<h2>Auditoria visível ao cliente</h2>
+<p>O cliente vê a auditoria do próprio tenant, incluindo todo acesso e ação de usuários ARX, identificados como tal (RN-18).</p>
+<h2>Eventos consumidos</h2>
+<p>Assina <code>civitas-tenant</code> e <code>civitas-audit</code>. Eventos com <code>tenant_id</code> vão para <code>audit_events</code> no schema do tenant; eventos sem tenant vão para <code>tenancy.platform_audit_events</code>. Todo evento é verificado pelo <code>event_id</code> antes de gravar.</p></div></section><section class="page" id="p-Servicos-Outbox-Relay"><header class="page-head"><p class="crumb">Servicos</p><h1>Outbox relay</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Responsável</td>
+<td>Felipe</td>
+</tr>
+<tr>
+<td>Repositório</td>
+<td><code>civitas-api</code></td>
+</tr>
+<tr>
+<td>Container App</td>
+<td>Outbox relay (worker, sem endpoint público)</td>
+</tr>
+<tr>
+<td>Banco · schema</td>
+<td>Leitura dos <code>audit_outbox</code> em <code>cp_identity</code> (<code>auth</code>, <code>identity</code>, <code>rbac</code>) e <code>civitas_db</code> (<code>tenancy</code>)</td>
+</tr>
+<tr>
+<td>Situação</td>
+<td>A fazer</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Responsabilidade</h2>
+<p>Lê os registros pendentes das tabelas <code>audit_outbox</code> de todos os serviços, publica no Service Bus e marca como enviados. <strong>Não</strong> interpreta nem altera eventos.</p>
+<h2>Regras de implementação</h2>
+<ul>
+<li>Publica no tópico definido pelo tipo do evento: <code>tenant.*</code> em <code>civitas-tenant</code>, o resto em <code>civitas-audit</code>.</li>
+<li>Usa o <code>tenant_id</code> como sessão do Service Bus, para manter a ordem por tenant.</li>
+<li>Marca como enviado só depois da confirmação do Service Bus. Se cair no meio, republica; os consumidores descartam a duplicata pelo <code>event_id</code>.</li>
+<li>Registros enviados há mais de 30 dias são apagados do outbox (valor em configuração).</li>
+<li>Alerta quando há registros pendentes há mais de 5 minutos (valor em configuração).</li>
+</ul>
+<p>Catálogo de eventos em <a href="#p-Arquitetura-Eventos">Eventos</a>.</p></div></section><section class="page" id="p-Tenants"><header class="page-head"><h1>Tenants</h1></header><div class="prose"><p>Criar um tenant não sobe serviços novos: cria o registro no catálogo, <strong>o schema próprio do cliente no <code>civitas_db</code></strong> e o administrador local do cliente. Onde fica cada dado está em <a href="#p-Arquitetura-Isolamento-de-Dados">Isolamento de Dados</a>.</p>
+<h2>Ciclo de vida</h2>
+<div class="diagram"><pre class="mermaid">stateDiagram-v2
+    [*] --&gt; draft
+    draft --&gt; provisioning
+    provisioning --&gt; active
+    provisioning --&gt; provisioning_failed
+    provisioning_failed --&gt; provisioning: nova tentativa
+    active --&gt; suspended
+    suspended --&gt; active
+    suspended --&gt; decommissioning
+    decommissioning --&gt; deleted
+    deleted --&gt; [*]</pre></div>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Significa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>draft</code></td>
+<td>Cadastro em andamento no SecOps (<code>tenant_drafts</code>)</td>
+</tr>
+<tr>
+<td><code>provisioning</code></td>
+<td>Schema e recursos sendo criados</td>
+</tr>
+<tr>
+<td><code>provisioning_failed</code></td>
+<td>Algum passo falhou; nada exposto ao cliente</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>Em uso</td>
+</tr>
+<tr>
+<td><code>suspended</code></td>
+<td>Logins bloqueados, dados mantidos</td>
+</tr>
+<tr>
+<td><code>decommissioning</code></td>
+<td>Período de retenção antes da exclusão (30 dias, RN-19; parâmetro de configuração)</td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td>Schema e arquivos apagados; resta o registro mínimo para auditoria</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Provisionamento</h2>
+<p>Cada passo é idempotente.</p>
+<ol>
+<li>Registrar o tenant em <code>tenancy.tenants</code> com status <code>provisioning</code>.</li>
+<li><strong>Criar o schema <code>tenant_&lt;id&gt;</code> no <code>civitas_db</code>.</strong></li>
+<li><strong>Aplicar no schema todas as migrações de domínio.</strong></li>
+<li>Registrar no catálogo o nome do schema.</li>
+<li>Registrar módulos (<code>tenant_modules</code>) e contrato (<code>tenant_contracts</code>).</li>
+<li>Criar o administrador local do cliente como usuário normal (User) com credencial break-glass e MFA obrigatório no primeiro acesso (Authentication) — RN-04, ADR-014.</li>
+<li>Vincular esse usuário ao tenant com o papel Tenant Admin (RBAC).</li>
+<li>Mudar o status para <code>active</code> e gravar <code>tenant.created</code> no <code>audit_outbox</code>; o Authentication atualiza o cache ao receber o evento.</li>
+</ol>
+<h2>Descomissionamento</h2>
+<ol>
+<li>Suspender: logins bloqueados, dados mantidos.</li>
+<li>Iniciar <code>decommissioning</code>: começa o período de retenção (30 dias, RN-19; exportação ao cliente em P-05).</li>
+<li>Ao fim do período: exportar o schema se o contrato pedir, executar <code>DROP SCHEMA tenant_&lt;id&gt; CASCADE</code> e apagar os arquivos do tenant.</li>
+<li>Manter só o registro mínimo do tenant e a trilha de auditoria.</li>
+</ol>
+<blockquote class="note">
+<p>A rotina automática de exclusão (passo 3) não faz parte da sprint atual.</p>
+</blockquote></div></section><section class="page" id="p-Fluxos"><header class="page-head"><h1>Fluxos</h1></header><div class="prose"><h2>Login com conta Microsoft</h2>
+<div class="diagram"><pre class="mermaid">graph TD
+    A[Clica em Entrar com Microsoft] --&gt; B[Entra devolve tid e oid]
+    B --&gt; C{tid vinculado a tenant ativo?}
+    C --&gt;|não| R1[Recusa: organização não habilitada]
+    C --&gt;|sim| D{oid já vinculado?}
+    D --&gt;|sim| S[Cria a sessão e o token Civitas]
+    D --&gt;|não| E{Convite pendente para o e-mail?}
+    E --&gt;|não| R2[Recusa: usuário sem convite]
+    E --&gt;|sim| F[Vincula oid e aceita o convite]
+    F --&gt; S</pre></div>
+<h2>Criação de tenant</h2>
+<div class="diagram"><pre class="mermaid">sequenceDiagram
+    participant SecOps as civitas-secops
+    participant Tenant
+    participant DB as civitas_db
+    participant Auth as civitas-auth
+    SecOps-&gt;&gt;Tenant: POST /tenants
+    Tenant-&gt;&gt;DB: INSERT em tenancy.tenants (provisioning)
+    Tenant-&gt;&gt;DB: CREATE SCHEMA tenant_&lt;id&gt;
+    Tenant-&gt;&gt;DB: Aplica migrações de domínio no schema
+    Tenant-&gt;&gt;DB: Grava módulos e contrato
+    Tenant-&gt;&gt;Auth: Cria admin (User), credencial break-glass (Authentication) e vínculo Tenant Admin (RBAC)
+    Tenant-&gt;&gt;DB: Status active + tenant.created no audit_outbox
+    Tenant--&gt;&gt;SecOps: Tenant pronto
+    Note over Auth: Outbox relay publica tenant.created e o Authentication atualiza o cache de tenants</pre></div>
+<h2>Requisição de dados de um cliente</h2>
+<div class="diagram"><pre class="mermaid">sequenceDiagram
+    participant Front as civitas-secops
+    participant Core
+    participant Tenant
+    participant DB as civitas_db
+    Front-&gt;&gt;Core: GET /monitoring (token com tid = A)
+    Core-&gt;&gt;Tenant: GET /internal/tenants/A (com cache local)
+    Tenant--&gt;&gt;Core: schema_name tenant_a, status active
+    Core-&gt;&gt;DB: BEGIN
+    Core-&gt;&gt;DB: SET LOCAL search_path TO tenant_a
+    Core-&gt;&gt;DB: SELECT ... FROM monitoring_*
+    Core-&gt;&gt;DB: COMMIT
+    Core--&gt;&gt;Front: Dados só do tenant A</pre></div>
+<h2>Usuário desativado no IdP</h2>
+<ol>
+<li>O administrador do cliente desativa o usuário no Entra.</li>
+<li>Na próxima renovação do token (até 10 minutos, P-01), o Authentication tenta renovar junto ao Entra.</li>
+<li>O Entra recusa, a sessão é revogada e o front volta para a tela de login.</li>
+</ol>
+<h2>Usuário ARX acessa um tenant de cliente</h2>
+<ol>
+<li>O usuário ARX entra pela conta da ARX.</li>
+<li>No SecOps, escolhe o tenant; <code>/auth/tenant/switch</code> emite token com o <code>tid</code> do cliente e <code>arx = true</code>.</li>
+<li>Cada ação gera auditoria marcada como acesso ARX.</li>
+</ol></div></section><section class="page" id="p-DevOps"><header class="page-head"><h1>DevOps</h1></header><div class="prose"><p>Como o Civitas é construído, publicado e monitorado.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Página</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#p-DevOps-Ambientes">Ambientes</a></td>
+<td>Ambientes, assinaturas e acessos</td>
+</tr>
+<tr>
+<td><a href="#p-DevOps-Pipeline-e-Deploy">Pipeline e Deploy</a></td>
+<td>Como o código chega à produção</td>
+</tr>
+<tr>
+<td><a href="#p-DevOps-Observabilidade">Observabilidade</a></td>
+<td>Logs, métricas, alertas</td>
+</tr>
+<tr>
+<td><a href="#p-DevOps-Migracoes-de-Banco">Migrações de Banco</a></td>
+<td>Como alterar o banco de controle e os bancos de tenant</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-DevOps-Ambientes"><header class="page-head"><p class="crumb">DevOps</p><h1>Ambientes</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Ambiente</th>
+<th>Uso</th>
+<th>Assinatura / Resource group</th>
+<th>URL</th>
+<th>Quem publica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Desenvolvimento</td>
+<td>Testes dos devs</td>
+<td>A preencher</td>
+<td>A preencher</td>
+<td>Pipeline, a cada merge</td>
+</tr>
+<tr>
+<td>Homologação</td>
+<td>Validação do PO antes da review</td>
+<td>A preencher</td>
+<td>A preencher</td>
+<td>Pipeline, manual</td>
+</tr>
+<tr>
+<td>Produção</td>
+<td>Clientes e demonstrações</td>
+<td>A preencher</td>
+<td>A preencher</td>
+<td>Pipeline, com aprovação do PO</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Acessos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Pessoa</th>
+<th>Desenvolvimento</th>
+<th>Homologação</th>
+<th>Produção</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Regras</h2>
+<ul>
+<li>Região Brazil South em todos os ambientes.</li>
+<li>Nenhum recurso criado manualmente no portal sem registro aqui.</li>
+<li>Segredos de cada ambiente em Key Vault próprio.</li>
+</ul></div></section><section class="page" id="p-DevOps-Pipeline-e-Deploy"><header class="page-head"><p class="crumb">DevOps</p><h1>Pipeline e Deploy</h1></header><div class="prose"><h2>Repositórios</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Repositório</th>
+<th>Conteúdo</th>
+<th>Publica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>civitas-secops</code></td>
+<td>Front de operação</td>
+<td>Front</td>
+</tr>
+<tr>
+<td><code>civitas-auth</code></td>
+<td>Authentication, User, RBAC</td>
+<td>Um Container App por serviço</td>
+</tr>
+<tr>
+<td><code>civitas-api</code></td>
+<td>Tenant, Core</td>
+<td>Um Container App por serviço</td>
+</tr>
+<tr>
+<td>Pacote comum</td>
+<td>Token, contexto de tenant, logs, auditoria</td>
+<td>Versão no Azure Artifacts</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="note">
+<p>Estrutura de pastas de cada repositório: a preencher pelo Felipe.</p>
+</blockquote>
+<h2>Fluxo</h2>
+<ol>
+<li>Branch por história, nome <code>feature/&lt;id-da-historia&gt;</code>.</li>
+<li>Pull request com revisão obrigatória do dev sênior.</li>
+<li>O pipeline roda testes, incluindo os de isolamento entre tenants.</li>
+<li>Merge publica em desenvolvimento.</li>
+<li>Publicação em homologação e produção a pedido do PO.</li>
+</ol>
+<h2>Checklist do pull request</h2>
+<ul>
+<li>☐ Testes passando, incluindo isolamento entre tenants</li>
+<li>☐ Migração de domínio testada em mais de um schema de tenant, se houver</li>
+<li>☐ Página do serviço na wiki atualizada</li>
+<li>☐ OpenAPI atualizada</li>
+<li>☐ Decisão nova registrada em Decisões, se houver</li>
+</ul></div></section><section class="page" id="p-DevOps-Observabilidade"><header class="page-head"><p class="crumb">DevOps</p><h1>Observabilidade</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Ferramenta</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logs</td>
+<td>Application Insights</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Métricas</td>
+<td>Azure Monitor</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Rastreamento entre serviços</td>
+<td>Application Insights (correlation_id)</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Alertas</td>
+<td>Azure Monitor</td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Campos obrigatórios em todo log</h2>
+<p><code>timestamp</code>, <code>service</code>, <code>correlation_id</code>, <code>tenant_id</code>, <code>user_id</code>, <code>level</code>, <code>message</code>.</p>
+<h2>Alertas mínimos</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Alerta</th>
+<th>Condição</th>
+<th>Quem recebe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Serviço fora do ar</td>
+<td>A preencher</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Falhas de login acima do normal</td>
+<td>A preencher</td>
+<td>A preencher</td>
+</tr>
+<tr>
+<td>Provisionamento com falha</td>
+<td>Qualquer tenant em <code>provisioning_failed</code></td>
+<td>A preencher</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-DevOps-Migracoes-de-Banco"><header class="page-head"><p class="crumb">DevOps</p><h1>Migrações de Banco</h1></header><div class="prose"><p>Existem dois tipos de migração, com regras diferentes.</p>
+<h2>Migrações de controle</h2>
+<p>Schemas <code>auth</code>, <code>identity</code>, <code>rbac</code> (<code>cp_identity</code>) e <code>tenancy</code> (<code>civitas_db</code>). Rodam uma vez, no repositório do serviço dono do schema. Nenhum serviço altera schema de outro.</p>
+<h2>Migrações de domínio (schemas de tenant)</h2>
+<p>Tabelas do Core e dos módulos de produto. <strong>Precisam chegar a todos os schemas <code>tenant_&lt;id&gt;</code>.</strong></p>
+<ol>
+<li>A migração é escrita e versionada uma única vez no <code>civitas-api</code>.</li>
+<li>No deploy, o pipeline lista os schemas de tenant no catálogo (<code>tenancy.tenants</code>) e aplica a migração em cada um.</li>
+<li>A versão aplicada fica registrada dentro de cada schema (tabela de controle da ferramenta de migração).</li>
+<li>Falha em um schema não bloqueia os outros: o tenant fica marcado para nova tentativa e gera alerta.</li>
+<li>Um tenant novo recebe todas as migrações no provisionamento.</li>
+</ol>
+<h2>Regras para escrever migração de domínio</h2>
+<ul>
+<li>Compatível com a versão anterior do código (adicionar coluna antes de usar, remover só depois).</li>
+<li>Sem nome de schema escrito na migração: ela roda com o <code>search_path</code> do tenant.</li>
+<li>Testada em pelo menos dois schemas de tenant antes do merge.</li>
+</ul>
+<blockquote class="note">
+<p>Ferramenta de migração: a preencher pelo Felipe.</p>
+</blockquote></div></section><section class="page" id="p-Sprints"><header class="page-head"><h1>Sprints</h1></header><div class="prose"><p>Sprints de 2 semanas, com sprint review para a diretoria ao final. Cada sprint tem uma página criada a partir do <a href="#p-Sprints-Modelo-de-Sprint">modelo</a>.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Sprint</th>
+<th>Período</th>
+<th>Objetivo</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#p-Sprints-Sprint-Autenticacao-e-Tenants">Autenticação e Tenants</a></td>
+<td>Até 2026-10-16 (sexta-feira)</td>
+<td>Serviços de identidade e tenants em produção, com schema por tenant</td>
+<td>Em andamento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Formato da sprint review</h2>
+<ol>
+<li>Objetivo da sprint e o que foi entregue (5 min).</li>
+<li>Arquitetura e backend: o que foi construído, onde roda, decisões tomadas (15 min).</li>
+<li>Demonstração funcionando em produção (10 min).</li>
+<li>O que não foi entregue e por quê, com nova data (5 min).</li>
+<li>Próxima sprint, riscos e decisões necessárias (5 min).</li>
+</ol></div></section><section class="page" id="p-Sprints-Modelo-de-Sprint"><header class="page-head"><p class="crumb">Sprints</p><h1>Sprint N — Objetivo</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Período</td>
+<td>AAAA-MM-DD a AAAA-MM-DD</td>
+</tr>
+<tr>
+<td>Objetivo</td>
+<td>Uma frase</td>
+</tr>
+<tr>
+<td>Data da review</td>
+<td>AAAA-MM-DD</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Histórias</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>História</th>
+<th>Responsável</th>
+<th>Pronto quando</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Decisões tomadas na sprint</h2>
+<p>Links para as páginas em Decisões.</p>
+<h2>Resultado da review</h2>
+<ul>
+<li>Entregue:</li>
+<li>Não entregue e por quê:</li>
+<li>Feedback da diretoria:</li>
+</ul>
+<h2>Ações para a próxima sprint</h2></div></section><section class="page" id="p-Sprints-Sprint-Autenticacao-e-Tenants"><header class="page-head"><p class="crumb">Sprints</p><h1>Sprint — Autenticação e Tenants</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Período</td>
+<td>Até 2026-10-16 (sexta-feira)</td>
+</tr>
+<tr>
+<td>Objetivo</td>
+<td>Authentication, User, RBAC, Tenant e Core publicados como Container Apps; criar tenant com schema próprio e entrar com conta Microsoft ponta a ponta</td>
+</tr>
+<tr>
+<td>Checkpoint com a diretoria</td>
+<td>Mensagem de status até 2026-10-14</td>
+</tr>
+<tr>
+<td>Situação em 2026-10-13</td>
+<td>5 serviços separados e publicados no Azure; bancos e schemas de serviço criados; serviço de autenticação (login local, token e sessões) em testes finais; login Microsoft e Google previsto para 2026-10-16; parte de tenants até 2026-10-15</td>
+</tr>
+<tr>
+<td>Data da review</td>
+<td>2026-10-16 (sexta-feira)</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Histórias</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>História</th>
+<th>Responsável</th>
+<th>Pronto quando</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pacote comum no Azure Artifacts (token, tenant, logs, auditoria)</td>
+<td>Felipe</td>
+<td>Usado pelo <code>civitas-auth</code> e pelo <code>civitas-api</code></td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Pipelines com um Container App por serviço</td>
+<td>Felipe</td>
+<td>Cada serviço publica sozinho</td>
+<td>Feito: 5 serviços publicados no Azure</td>
+</tr>
+<tr>
+<td>Schema por tenant: criação no provisionamento e <code>SET LOCAL search_path</code></td>
+<td>Felipe</td>
+<td>Tenant criado ganha <code>tenant_&lt;id&gt;</code>; teste de pool com dois tenants passa</td>
+<td>Em andamento, previsto para 2026-10-15</td>
+</tr>
+<tr>
+<td>Migrações de domínio em todos os schemas de tenant</td>
+<td>Felipe</td>
+<td>Migração nova chega a todos os schemas pelo pipeline</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Usuários de banco por serviço e Row-Level Security no <code>cp_identity</code></td>
+<td>Felipe</td>
+<td>Cada serviço só acessa o próprio schema</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Authentication: login Entra, token, JWKS, renovação</td>
+<td>Felipe</td>
+<td>Usuário entra com Microsoft; desativado perde a sessão</td>
+<td>Previsto para 2026-10-16</td>
+</tr>
+<tr>
+<td>Authentication: login Google Workspace (OIDC), empresa vinculada pelo domínio <code>hd</code>, usuário pelo <code>sub</code></td>
+<td>Felipe</td>
+<td>Usuário Google de domínio autorizado entra; domínio não autorizado é recusado</td>
+<td>Previsto para 2026-10-16</td>
+</tr>
+<tr>
+<td>Telas do cliente: autorizar domínio Google e vincular mais de uma organização Microsoft</td>
+<td>Wanderson</td>
+<td>Admin do cliente configura Google e duas organizações Entra no mesmo tenant</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Authentication: base do serviço (login local, token, JWKS, sessões)</td>
+<td>Felipe</td>
+<td>Login local funciona e emite token validado pelos outros serviços</td>
+<td>Em testes finais</td>
+</tr>
+<tr>
+<td>Login local com MFA (break-glass)</td>
+<td>Felipe</td>
+<td>Admin local entra com senha + código</td>
+<td>Em testes finais</td>
+</tr>
+<tr>
+<td>Separar User e RBAC em Container Apps próprios</td>
+<td>Felipe</td>
+<td>Chamadas por HTTP + <code>X-Civitas-Service-Token</code>; se não couber, data comunicada no checkpoint</td>
+<td>Feito</td>
+</tr>
+<tr>
+<td>Outbox relay e tópicos <code>civitas-tenant</code> / <code>civitas-audit</code> no Service Bus</td>
+<td>Felipe</td>
+<td>Evento gravado no outbox chega ao Core; duplicata é descartada</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Cache de tenants no Authentication</td>
+<td>Felipe</td>
+<td>Login funciona com o <code>civitas-api</code> parado; suspensão bloqueia login em segundos</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Mover <code>audit_events</code> e <code>monitoring_*</code> para os schemas de tenant</td>
+<td>Felipe</td>
+<td>Nenhuma tabela de domínio fica nos schemas compartilhados <code>audit</code> e <code>monitoring</code></td>
+<td>Junto com a parte de tenants</td>
+</tr>
+<tr>
+<td>Remover <code>tenant_admin_users</code>: admin vira usuário normal</td>
+<td>Felipe</td>
+<td>Provisionamento cria o admin via User, Authentication e RBAC</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>User: convites e resolução no login</td>
+<td>Wanderson</td>
+<td>Convidado entra e o identificador do IdP fica vinculado</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>RBAC: papéis iniciais e atribuição por tenant</td>
+<td>Wanderson</td>
+<td>Papéis no token; último Tenant Admin protegido</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>SecOps: criar, listar e suspender tenant</td>
+<td>Wanderson</td>
+<td>ARX cria tenant e vê o status</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Telas do cliente: Entra, convites, papéis</td>
+<td>Wanderson</td>
+<td>Admin do cliente configura sem ajuda da ARX</td>
+<td>A fazer</td>
+</tr>
+<tr>
+<td>Documentação dos serviços na wiki</td>
+<td>Jonas, Felipe e Wanderson</td>
+<td>Páginas atualizadas com OpenAPI</td>
+<td>Em andamento</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Roteiro do teste ponta a ponta</h2>
+<ul>
+<li>☐ Criar o tenant A pelo SecOps e confirmar que o schema <code>tenant_&lt;id&gt;</code> existe no <code>civitas_db</code></li>
+<li>☐ Criar o tenant B e confirmar o segundo schema</li>
+<li>☐ Entrar como administrador local do tenant A e configurar o MFA</li>
+<li>☐ Vincular o Entra ID de teste ao tenant A</li>
+<li>☐ Vincular uma segunda organização Entra ao mesmo tenant e entrar com usuário dela</li>
+<li>☐ Autorizar um domínio Google e entrar com usuário Google</li>
+<li>☐ Convidar um usuário e atribuir Tenant Analyst</li>
+<li>☐ Entrar com esse usuário pela conta Microsoft</li>
+<li>☐ Gerar dados de monitoring no tenant A e confirmar que não aparecem no tenant B</li>
+<li>☐ Desativar o usuário no Entra e confirmar a perda de acesso em até 10 minutos</li>
+<li>☐ Entrar como usuário ARX e acessar o tenant A</li>
+<li>☐ Conferir a auditoria (<code>audit_events</code> no schema do tenant e <code>platform_audit_events</code> para a criação do tenant)</li>
+<li>☐ Parar o Container App do Tenant e confirmar que o login continua funcionando</li>
+<li>☐ Suspender o tenant A e confirmar que os logins dele são bloqueados</li>
+</ul></div></section><section class="page" id="p-Pendencias"><header class="page-head"><h1>Pendências</h1></header><div class="prose"><p>Atualizado em 2026-10-09.</p>
+<h2>Para a diretoria</h2>
+<p>Perguntas de regra de negócio, sempre com a recomendação técnica. Nenhuma trava a sprint atual: o time segue a orientação provisória até a resposta.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Pergunta</th>
+<th>Recomendação</th>
+<th>Orientação provisória para o time</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P-04</td>
+<td>Quais tipos de usuário existem dentro de um cliente? (ver pergunta reformulada abaixo)</td>
+<td>Administrador, Analista, Leitura</td>
+<td>Papéis como dados iniciais por migração</td>
+<td>Reenviada à diretoria</td>
+</tr>
+<tr>
+<td>P-05</td>
+<td>No cancelamento, o cliente recebe uma exportação dos dados antes da exclusão em 30 dias?</td>
+<td>Sim, sob pedido, durante os 30 dias</td>
+<td>Nada a implementar nesta sprint</td>
+<td>Aguardando diretoria</td>
+</tr>
+<tr>
+<td>P-10</td>
+<td>Modo painel para TV do SOC: confirmar a proposta abaixo</td>
+<td>Usuário de painel, só leitura, sem expiração por inatividade, mas revogado se desativado no IdP</td>
+<td>Nada nesta sprint</td>
+<td>Aguardando diretoria</td>
+</tr>
+</tbody>
+</table></div>
+<h3>P-04 reformulada</h3>
+<p>Dentro de um cliente, quais tipos de usuário existem? Proposta:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>O que faz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Administrador do cliente</td>
+<td>Configura login (Microsoft ou Google), convida pessoas e define o que cada uma pode fazer</td>
+</tr>
+<tr>
+<td>Analista</td>
+<td>Usa os módulos contratados e gera relatórios</td>
+</tr>
+<tr>
+<td>Leitura</td>
+<td>Só visualiza</td>
+</tr>
+<tr>
+<td>Painel (P-10)</td>
+<td>Só leitura de painéis, para ficar aberto na TV do SOC</td>
+</tr>
+</tbody>
+</table></div>
+<p>Na ARX: <strong>Administrador da plataforma</strong> (cria, suspende e desativa clientes) e <strong>Operador</strong> (opera e configura qualquer cliente, sem criar nem desativar). Falta ou sobra algum tipo?</p>
+<h3>P-10 Modo painel</h3>
+<p>A sessão não cai a cada 10 minutos: a renovação é automática e invisível. O usuário só perde o acesso quando é desativado no Microsoft ou no Google do cliente. Para a TV do SOC, a proposta é um usuário de painel, só leitura, cuja sessão não expira por falta de uso. Ele continua perdendo o acesso em até 10 minutos se for desativado no IdP, porque desligar essa checagem deixaria uma tela com dados do cliente aberta sem controle.</p>
+<h2>Internas do time</h2>
+<p>Pontos técnicos a fechar entre o gestor do projeto e os devs.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Ponto</th>
+<th>Responsável</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I-06</td>
+<td>Os serviços no Azure rodam em Container Apps ou App Service? (<code>civitas-api-stage</code> aparece como App Service)</td>
+<td>Felipe</td>
+<td>Aberto</td>
+</tr>
+<tr>
+<td>I-07</td>
+<td>Onde ficam a senha e o TOTP dos admins locais (não há <code>local_credentials</code> no <code>auth</code>)</td>
+<td>Felipe</td>
+<td>Aberto</td>
+</tr>
+<tr>
+<td>I-08</td>
+<td>Diferença entre <code>identity_links</code> e <code>user_identities</code>, e entre <code>auth.authorized_domains</code> e <code>identity.tenant_idp_links</code></td>
+<td>Felipe</td>
+<td>Aberto</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Resolvidas</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Ponto</th>
+<th>Resolução</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I-09</td>
+<td>Data do login Microsoft e Google</td>
+<td>Até 2026-10-16</td>
+<td>2026-10-13</td>
+</tr>
+<tr>
+<td>I-05</td>
+<td>Separar User e RBAC em serviços próprios</td>
+<td>Feito: 5 serviços publicados separadamente</td>
+<td>2026-10-13</td>
+</tr>
+<tr>
+<td>P-01</td>
+<td>Tempo para usuário desativado perder o acesso</td>
+<td>10 minutos (RN-14); pedido de modo painel para TV do SOC (RN-15, detalhe em P-10)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-02</td>
+<td>Vínculo de empresa Google</td>
+<td>Pelo domínio (RN-16)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-05</td>
+<td>Retenção após cancelamento</td>
+<td>30 dias (RN-19); exportação ainda em aberto</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-06</td>
+<td>Usuário em mais de um tenant</td>
+<td>Permitido (RN-17)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-08</td>
+<td>Cliente vê acessos da ARX</td>
+<td>Sim (RN-18)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-03</td>
+<td>Login com Google</td>
+<td>Nesta sprint (RN-22)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-07</td>
+<td>MFA das contas locais</td>
+<td>Aplicativo autenticador TOTP (RN-21)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>P-09</td>
+<td>Várias organizações Microsoft por tenant</td>
+<td>Permitido (RN-20)</td>
+<td>2026-10-09</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Monorepo ou repositórios separados</td>
+<td>Dois repositórios, um Container App por serviço (<a href="#p-Decisoes-ADR-009-Repositorios-e-Deploy">ADR-009</a>)</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Banco único ou bancos existentes</td>
+<td><code>cp_identity</code> e <code>civitas_db</code>, um schema por serviço (<a href="#p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado">ADR-001</a>)</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Como isolar os dados de cada cliente</td>
+<td>Um schema por tenant no <code>civitas_db</code> (<a href="#p-Decisoes-ADR-002-Um-Schema-por-Tenant">ADR-002</a>)</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>I-01</td>
+<td>Onde ficam convites e identidades externas</td>
+<td><code>identity.invitations</code> e <code>identity.external_identities</code></td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>I-02</td>
+<td>Auditoria de ações sem tenant</td>
+<td><code>tenancy.platform_audit_events</code>, gravada pelo Core</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>I-03</td>
+<td>Nome do schema no catálogo</td>
+<td>Coluna <code>schema_name</code> em <code>tenancy.tenants</code></td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>I-04</td>
+<td>Credenciais dos administradores locais</td>
+<td><code>auth.local_credentials</code>; admin como usuário normal (<a href="#p-Decisoes-ADR-014-Admin-como-Usuario-Normal">ADR-014</a>)</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Login dependente do <code>civitas-api</code></td>
+<td>Cache de tenants no Authentication (<a href="#p-Decisoes-ADR-013-Cache-de-Tenants">ADR-013</a>)</td>
+<td>2026-10-08</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Quem entrega os eventos do outbox</td>
+<td>Outbox relay + Service Bus (<a href="#p-Decisoes-ADR-010-Comunicacao-entre-Servicos">ADR-010</a>)</td>
+<td>2026-10-08</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Glossario"><header class="page-head"><h1>Glossário</h1></header><div class="prose"><div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Termo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tenant</td>
+<td>Um cliente da plataforma, com seus usuários, configurações e dados isolados</td>
+</tr>
+<tr>
+<td>Plano de controle</td>
+<td>Dados de quem é quem: tenants, usuários, papéis, licenças. Compartilhado</td>
+</tr>
+<tr>
+<td>Plano de dados</td>
+<td>Dados vindos das ferramentas do cliente. Isolado em um schema por tenant</td>
+</tr>
+<tr>
+<td>IdP</td>
+<td>Provedor de identidade do cliente (Entra ID ou Google Workspace)</td>
+</tr>
+<tr>
+<td>SSO</td>
+<td>Login único: o usuário entra com a conta corporativa que já tem</td>
+</tr>
+<tr>
+<td><code>tid</code></td>
+<td>Identificador imutável da organização no Entra ID</td>
+</tr>
+<tr>
+<td><code>oid</code></td>
+<td>Identificador imutável do usuário no Entra ID</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>Identificador imutável do usuário no Google</td>
+</tr>
+<tr>
+<td>Break-glass</td>
+<td>Conta local de emergência, usada para administração e recuperação</td>
+</tr>
+<tr>
+<td>Membership</td>
+<td>Vínculo entre um usuário e um tenant</td>
+</tr>
+<tr>
+<td>RBAC</td>
+<td>Controle de acesso por papéis</td>
+</tr>
+<tr>
+<td>Row-Level Security (RLS)</td>
+<td>Recurso do PostgreSQL que bloqueia linhas de outro tenant no próprio banco</td>
+</tr>
+<tr>
+<td>Provisionamento</td>
+<td>Criação automática de tudo que um tenant novo precisa</td>
+</tr>
+<tr>
+<td>ADR</td>
+<td>Registro de decisão de arquitetura</td>
+</tr>
+<tr>
+<td>Sprint review</td>
+<td>Apresentação do que foi construído ao final da sprint</td>
+</tr>
+<tr>
+<td>CAB</td>
+<td>Civitas Architecture Blueprint, o documento de arquitetura de referência</td>
+</tr>
+<tr>
+<td>SecOps</td>
+<td>Interface interna da ARX para operar a plataforma</td>
+</tr>
+<tr>
+<td>Schema de tenant</td>
+<td>Schema <code>tenant_&lt;id&gt;</code> no <code>civitas_db</code> que guarda todos os dados de domínio de um cliente</td>
+</tr>
+<tr>
+<td><code>search_path</code></td>
+<td>Configuração do PostgreSQL que define em qual schema as consultas rodam; aplicada com <code>SET LOCAL</code> a cada transação</td>
+</tr>
+<tr>
+<td>Catálogo</td>
+<td>Schema <code>tenancy</code>, com o cadastro de todos os tenants e o nome do schema de cada um</td>
+</tr>
+<tr>
+<td><code>audit_outbox</code></td>
+<td>Tabela em cada schema onde o serviço grava eventos de auditoria na mesma transação, publicados depois para o Core</td>
+</tr>
+<tr>
+<td><code>X-Civitas-Service-Token</code></td>
+<td>Cabeçalho que autentica chamadas internas entre serviços</td>
+</tr>
+<tr>
+<td>Pacote comum</td>
+<td>Biblioteca no Azure Artifacts com token, contexto de tenant, logs e auditoria</td>
+</tr>
+<tr>
+<td>Outbox relay</td>
+<td>Worker que lê os <code>audit_outbox</code> e publica os eventos no Service Bus</td>
+</tr>
+<tr>
+<td>Cache de tenants</td>
+<td>Cópia do status dos tenants no Authentication, para o login não depender do Tenant Service</td>
+</tr>
+<tr>
+<td>DLQ</td>
+<td>Dead-letter queue: fila de mensagens que falharam várias vezes, monitorada com alerta</td>
+</tr>
+</tbody>
+</table></div></div></section><section class="page" id="p-Como-Contribuir"><header class="page-head"><h1>Como Contribuir</h1></header><div class="prose"><h2>Regra principal</h2>
+<p>Toda entrega atualiza a wiki. Uma história só está pronta quando a documentação dela está aqui.</p>
+<h2>Quando escrever o quê</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Onde documentar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tomei uma decisão técnica relevante</td>
+<td>Nova página em <a href="#p-Decisoes">Decisões</a>, a partir do modelo</td>
+</tr>
+<tr>
+<td>Criei ou alterei um serviço</td>
+<td>Página do serviço em <a href="#p-Servicos">Serviços</a></td>
+</tr>
+<tr>
+<td>A diretoria definiu ou mudou uma regra</td>
+<td><a href="#p-Regras-de-Negocio">Regras de Negócio</a>, com data e quem decidiu</td>
+</tr>
+<tr>
+<td>Surgiu uma dúvida de negócio</td>
+<td><a href="#p-Pendencias">Pendências</a>, com recomendação</td>
+</tr>
+<tr>
+<td>Mudou algo de infraestrutura</td>
+<td>Página correspondente em <a href="#p-DevOps">DevOps</a></td>
+</tr>
+<tr>
+<td>Terminou a sprint</td>
+<td>Página da sprint em <a href="#p-Sprints">Sprints</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Estilo</h2>
+<ul>
+<li>Comece pela resposta: a primeira frase diz o que é ou o que foi decidido.</li>
+<li>Tabelas para comparar itens; listas numeradas para passos.</li>
+<li>Diagramas em Mermaid (<code>::: mermaid</code> ... <code>:::</code>), versionados junto com o texto.</li>
+<li>Nada de segredo, senha ou dado de cliente na wiki.</li>
+</ul>
+<h2>Como editar</h2>
+<p>A wiki fica no repositório <code>civitas-wiki</code>, publicado como wiki no Azure DevOps. Edite os arquivos e abra pull request; quando a mudança acompanha código, cite o pull request do código. Para criar uma página, crie o arquivo <code>.md</code> e inclua o nome dele no arquivo <code>.order</code> da pasta.</p></div></section>
+</main>
+</div>
+<script>
+const IDX = [{"id": "p-Home", "t": "civitas — wiki do projeto", "x": "esta wiki é a fonte oficial de como o civitas é construído: arquitetura, decisões, serviços, regras de negócio e operação. se algo não está aqui, não está decidido. última atualização: 2026-10-09 · próxima sprint review: 2026-10-16 (sexta-feira) por onde começar se você quer... leia entender o produto e o vocabulário visão geral e glossário saber o que a diretoria definiu regras de negócio ver como a plataforma está montada hoje arquitetura entender onde ficam os dados de cada cliente isolamento de dados saber por que algo foi decidido decisões implementar ou alterar um serviço serviços entender o ciclo de vida de um cliente tenants ver o que está em andamento sprints e pendências escrever ou atualizar documentação como contribuir a arquitetura em quatro frases são dois repositórios: civitas-auth (authentication, user, rbac) e civitas-api (tenant e core). cada serviço é publicado como um container app próprio no azure. são dois bancos postgresql: cp_identity (identidade e acesso) e civitas_db (tenants e dados de domínio). cada tenant tem o seu próprio schema dentro do civitas_db . os dados de um cliente nunca ficam em tabelas compartilhadas com outro. equipe papel pessoa responsabilidade gestor do projeto / product owner / arquitetura jonas alfonso histórias, critérios de aceite, decisões técnicas, documentação, sprint reviews desenvolvedor sênior felipe (felpz) backend, segurança, infraestrutura e revisão de código desenvolvedor júnior wanderson integração front-api, telas, serviços de menor risco diretoria clerio almeida, lierte bourguignon, cristiano oliveira regras de negócio, prioridades e aprovação das entregas status atual item situação secops ( civitas-secops , interface de operação) no ar authentication, user, rbac ( civitas-auth ) publicados no azure, um serviço cada; serviço de autenticação em testes finais; login microsoft e google previsto para 2026-10-16 tenant, core ( civitas-api ) publicados no azure; schema por tenant e provisionamento até 2026-10-15 integrações e módulos de produto planejados atualize esta página a cada sprint review."}, {"id": "p-Visao-Geral", "t": "visão geral", "x": "o civitas é a plataforma de segurança da brasiline / arx cyber. ela concentra, para cada cliente, as informações das ferramentas de segurança que ele usa e entrega visão de ativos, exposições, riscos e relatórios, operada pela arx através do secops. quem usa perfil onde acessa o que faz operação arx secops cria e administra tenants, módulos e serviços; acessa qualquer cliente administrador do cliente web app configura sso, domínios, usuários e papéis do próprio tenant analista do cliente web app usa os módulos contratados e gera relatórios sistemas de terceiros api consomem funcionalidades sem usar a interface web módulos módulo situação observação secops no ar interface de operação interna identidade e tenants em desenvolvimento authentication, user, rbac e tenant integrações (conectores) planejado biblioteca de conectores versionados por fabricante e versão assessment planejado avaliação pontual por framework (nist, cis controls e outros); gera o plano de ação risk management planejado acompanhamento evolutivo do risco a partir dos dados coletados observabilidade planejado dados das aplicações do cristiano (patch manager e outras) consumidos via api premissas do produto o cliente nunca cria uma conta nova: entra com microsoft entra id ou google workspace. o volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança. os clientes são majoritariamente microsoft; a plataforma roda no azure, região brazil south."}, {"id": "p-Regras-de-Negocio", "t": "regras de negócio", "x": "regras definidas pela diretoria. não são alteradas pelo time técnico: dúvidas vão para pendências , e mudanças são registradas no histórico abaixo com data e responsável. identidade e acesso id regra origem data rn-01 usuários de clientes autenticam somente via sso: microsoft entra id ou google workspace clerio 2026-10 rn-02 contas locais existem só para administração e recuperação (break-glass) clerio 2026-10 rn-03 a conta raiz da arx tem no mínimo 2 administradores locais lierte / clerio 2026-10 rn-04 ao criar um tenant, a arx cria 1 administrador local do cliente; os demais usuários são cadastrados pelo próprio cliente lierte 2026-10 rn-05 dentro do tenant, o administrador do cliente configura domínios, sso, mfa, saml e papéis lierte 2026-10 rn-06 a organização é vinculada pelo identificador imutável do idp, nunca pelo domínio (exceção para google: rn-16) clerio 2026-10 rn-07 o usuário é vinculado pelo identificador imutável no primeiro login, nunca pelo e-mail clerio 2026-10 rn-08 usuário desativado no idp do cliente perde o acesso ao civitas sem ação manual da arx clerio 2026-10 rn-09 a arx cyber acessa e altera a configuração de qualquer tenant lierte / clerio 2026-10 rn-14 usuário desativado no idp perde o acesso ao civitas em no máximo 10 minutos diretoria (p-01) 2026-10-09 rn-15 deve existir uma forma de manter o civitas aberto continuamente em uma tv do soc do cliente (modo painel) diretoria (p-01) 2026-10-09 rn-16 empresas que usam google workspace são vinculadas pelo domínio; exceção à rn-06, porque o google não fornece identificador imutável da organização no login diretoria (p-02) 2026-10-09 rn-17 um usuário de cliente pode pertencer a mais de um tenant (grupo econômico) diretoria (p-06) 2026-10-09 rn-20 um tenant pode ter mais de uma organização microsoft (entra id) vinculada diretoria (p-09) 2026-10-09 rn-21 contas locais (break-glass) usam mfa por aplicativo autenticador (totp) diretoria (p-07) 2026-10-09 rn-22 o login com google workspace entra na sprint atual, junto com o entra id diretoria (p-03) 2026-10-09 rn-18 o cliente vê na auditoria do próprio tenant todo acesso e ação da arx diretoria (p-08) 2026-10-09 plataforma id regra origem data rn-10 os serviços são multi-tenant; o que se isola são dados e workloads de integração cab 2026-10 rn-11 authentication, user, rbac e tenant são microserviços distintos cab / lierte 2026-10 rn-12 conectores são versionados: várias versões de conector para o mesmo produto convivem, porque os clientes mantêm versões antigas clerio 2026-10 rn-19 após o cancelamento, os dados do tenant ficam guardados por 30 dias e depois são apagados diretoria (p-05) 2026-10-09 rn-13 aplicações do cristiano (patch manager e outras) seguem como produtos separados e expõem api para o civitas consumir os dados de observabilidade clerio / lierte 2026-10 módulos de produto id regra origem data rn-20 assessment é pontual, permite escolher o framework e gera um plano de ação lierte 2026-10 rn-21 o acompanhamento evolutivo pertence ao risk management, não ao assessment lierte 2026-10 histórico de alterações data regra mudança quem decidiu"}, {"id": "p-Arquitetura", "t": "arquitetura", "x": "esta página mostra o desenho que está sendo implementado. o cab (civitas architecture blueprint) é a visão de longo prazo; aqui está o recorte real, com repositórios, serviços, bancos e eventos. página conteúdo camadas o que cada camada do cab faz e a situação de cada uma mapeamento azure qual serviço azure implementa cada componente isolamento de dados um schema por tenant , onde fica cada tabela eventos quais eventos passam pelo service bus, quem publica e quem consome serviços e comunicação graph td front[&quot;civitas-secops (front)&quot;] subgraph ra[&quot;repositório civitas-auth&quot;] auth[&quot;authentication&lt;br/&gt;login · token · cache de tenants&quot;] user[&quot;user&lt;br/&gt;usuários · convites&quot;] rbac[&quot;rbac&lt;br/&gt;papéis · vínculos por tenant&quot;] end subgraph rb[&quot;repositório civitas-api&quot;] ten[&quot;tenant&lt;br/&gt;catálogo · cria schema&quot;] core[&quot;core&lt;br/&gt;dados do tenant · auditoria&quot;] relay[&quot;outbox relay&lt;br/&gt;publica eventos&quot;] end sb[&quot;service bus&lt;br/&gt;tópicos civitas-tenant e civitas-audit&quot;] front --&gt;|&quot;https + token civitas&quot;| auth front --&gt;|&quot;https + token civitas&quot;| ten front --&gt;|&quot;https + token civitas&quot;| core auth --&gt;|&quot;http + x-civitas-service-token&quot;| user auth --&gt;|&quot;http + x-civitas-service-token&quot;| rbac auth -.-&gt;|&quot;get /internal/tenants/{id} (só se faltar no cache)&quot;| ten relay --&gt;|&quot;lê audit_outbox de todos os serviços&quot;| sb sb --&gt;|&quot;civitas-tenant&quot;| auth sb --&gt;|&quot;civitas-tenant e civitas-audit&quot;| core dados graph td subgraph db1[&quot;banco cp_identity&quot;] sa[(&quot;auth&lt;br/&gt;sessões · mfa · sso · break-glass&quot;)] si[(&quot;identity&lt;br/&gt;usuários · ids do idp · convites&quot;)] sr[(&quot;rbac&lt;br/&gt;papéis · vínculos por tenant&quot;)] end subgraph db2[&quot;banco civitas_db&quot;] st[(&quot;tenancy&lt;br/&gt;catálogo · auditoria global&quot;)] subgraph ts[&quot;um schema por tenant&quot;] ta[(&quot;tenant_a&quot;)] tb[(&quot;tenant_b&quot;)] tn[(&quot;tenant_...&quot;)] end end cada caixa de serviço é um container app próprio. os dois repositórios usam o mesmo pacote comum (azure artifacts) para validar token, aplicar o contexto de tenant, gerar logs e gravar no outbox. repositórios repositório serviços banco civitas-secops front de operação da arx — civitas-auth authentication, user, rbac cp_identity civitas-api tenant, core, outbox relay civitas_db comunicação de para como front serviços expostos https com token civitas (jwt) serviço serviço (consulta imediata) http com cabeçalho x-civitas-service-token authentication tenant consulta o cache de tenants local; get /internal/tenants/{id} só quando o tenant não está no cache qualquer serviço outros serviços (aviso de mudança) grava em audit_outbox na mesma transação; o outbox relay publica no service bus ( eventos ) por que o login não depende do civitas-api o authentication mantém uma cópia do status de cada tenant (ativo, suspenso, desativado), atualizada pelos eventos do tópico civitas-tenant . se o civitas-api cair, os logins continuam funcionando. o login local da arx (break-glass) nunca consulta o tenant service."}, {"id": "p-Arquitetura-Camadas", "t": "camadas", "x": "camada responsabilidade situação presentation web app, secops, futura mobile, apis para terceiros secops no ar; web app em construção edge cdn, waf, proteção ddos, dns em espera no cab; azure front door previsto gateway roteamento, autenticação, rate limiting, versionamento, contexto de tenant entra quando houver mais de um serviço exposto (adr-012) application serviços de plataforma e de domínio serviços de identidade e tenants em construção integration conectores por fabricante e versão, coleta e normalização planejada messaging eventos e filas entre serviços service bus para eventos de domínio data persistência, cache, busca, arquivos ver isolamento de dados management administração e operação da plataforma (secops, observabilidade) em espera no cab regras entre camadas o front nunca acessa banco ou serviço interno diretamente: só a api dos serviços, com token civitas. sistemas externos não publicam direto na mensageria interna; entram por um endpoint de ingestão autenticado. toda mensagem e toda consulta carrega o tenant_id ."}, {"id": "p-Arquitetura-Mapeamento-Azure", "t": "mapeamento azure", "x": "nuvem única: azure, região brazil south, sem replicação geo-redundante para fora do brasil. componente serviço azure situação front de operação ( civitas-secops ) a preencher (static web apps ou container apps) em uso microserviços azure container apps, um por serviço em uso bancos cp_identity e civitas_db azure database for postgresql flexible server em uso pacote comum azure artifacts em implementação segredos e chaves de assinatura key vault em uso identidade entra id (aplicativo multi-tenant) + google oidc em construção observabilidade azure monitor + application insights em uso arquivos e evidências blob storage, container por tenant planejado eventos de domínio e filas service bus planejado cdn / waf / ddos azure front door premium + waf planejado api gateway api management (ou kong) a decidir (adr-012) eventos brutos de alto volume azure data explorer evolução futura cache azure managed redis planejado busca postgresql na primeira versão a reavaliar com volume redundância e residência de dados alta disponibilidade entre zonas dentro de brazil south. não ativar replicação geo-redundante: a região par de brazil south fica fora do brasil."}, {"id": "p-Arquitetura-Isolamento-de-Dados", "t": "isolamento de dados", "x": "regra principal: cada tenant tem o seu próprio schema postgresql dentro do banco civitas_db . os dados de domínio de um cliente (monitoramento, auditoria do cliente e, no futuro, ativos e findings) só existem dentro do schema dele. nenhuma tabela de domínio fica no schema public ou compartilhada entre clientes. por que um schema por tenant o volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança. com um schema por tenant: as tabelas de um cliente não crescem com os dados dos outros, e os índices ficam menores. exportar ou restaurar um cliente é um pg_dump -n tenant_&lt;id&gt; . excluir um cliente (cancelamento, lgpd) é um drop schema , não um delete em milhões de linhas. um erro de filtro no código não expõe dados de outro cliente, porque as tabelas são fisicamente separadas. a decisão está registrada em adr-002 . onde fica cada dado banco · schema tabelas isolamento cp_identity · auth sessions , mfa_challenges , mfa_policy , auth_config , authorized_domains , saml_providers , local_credentials (break-glass), tenant_status_cache , audit_outbox compartilhado, com tenant_id + row-level security cp_identity · identity users , external_identities ( tid + oid , sub ), invitations , audit_outbox usuário global; convites com tenant_id cp_identity · rbac roles , role_permissions , tenant_memberships (vínculo usuário–tenant com papéis), audit_outbox vínculos com tenant_id + row-level security civitas_db · tenancy tenants (com schema_name ), tenant_modules , tenant_contracts , tenant_drafts , provisioning_steps , platform_audit_events , audit_outbox catálogo global; só o tenant service escreve civitas_db · tenant_&lt;id&gt; audit_events , monitoring_* ; depois ativos, findings e módulos um schema por tenant blob storage · tenant-&lt;id&gt; arquivos e evidências um container por tenant (planejado) key vault credenciais de integração segredos com prefixo do tenant (planejado) resumo: identidade, acesso e catálogo são compartilhados e protegidos por tenant_id ; dados de domínio são isolados por schema. o administrador do cliente não tem tabela própria. ele é um usuário normal em identity.users , com o papel tenant admin em rbac.tenant_memberships ( adr-014 ). situação em 2026-10-13: hoje o civitas_db tem os schemas compartilhados audit e monitoring . na entrega da parte de tenants (até 2026-10-15), audit_events e monitoring_* passam para dentro de cada tenant_&lt;id&gt; . o schema audit permanece só para a auditoria global, de ações que não pertencem a nenhum cliente. como funciona na prática criação. no provisionamento, o tenant service cria o schema tenant_&lt;id&gt; , aplica nele todas as migrações de domínio e registra o nome do schema no catálogo ( tenancy.tenants ). nome do schema. sempre tenant_&lt;id&gt; , onde &lt;id&gt; é o identificador imutável do tenant. nunca é derivado do nome ou slug do cliente, que podem mudar. cada requisição. o pacote comum lê o tenant do token, busca o schema no catálogo (com cache) e executa set local search_path to tenant_&lt;id&gt; dentro da transação . nunca a partir da requisição. o schema vem só do token validado. nenhum parâmetro de url, corpo ou cabeçalho escolhe o schema. sem sql com nome de schema montado à mão. o código usa o contexto do pacote comum; concatenar nome de schema em sql é proibido. migrações. toda migração de domínio roda em todos os schemas de tenant listados no catálogo (ver migrações de banco ). exclusão. ao fim do período de retenção, drop schema tenant_&lt;id&gt; cascade (ver tenants ). atenção com pool de conexões. use sempre set local dentro de uma transação. um set search_path sem local fica preso na conexão e pode vazar para a próxima requisição de outro cliente que reutilizar a mesma conexão do pool. permissões no banco usuário de banco acesso authentication cp_identity.auth user cp_identity.identity rbac cp_identity.rbac tenant civitas_db.tenancy e permissão para criar e migrar schemas tenant_* core schemas tenant_* do civitas_db ; leitura do catálogo e escrita em tenancy.platform_audit_events outbox relay leitura e marcação dos audit_outbox de todos os schemas de serviço não há foreign key nem join entre schemas de serviços diferentes. a referência é feita pelo id e validada por api. testes obrigatórios de isolamento requisição com token do tenant a não lê nenhum dado do schema do tenant b, mesmo alterando ids na url. duas requisições seguidas de tenants diferentes na mesma conexão do pool usam cada uma o seu schema. requisição sem tenant no token não acessa nenhum schema de tenant. limites e evolução o modelo de schema por tenant atende bem centenas de clientes no mesmo banco. dois caminhos ficam previstos para quando o volume exigir, sem mudar o código dos serviços: situação evolução campo no catálogo cliente muito grande ou com exigência contratual mover o schema dele para um banco ou servidor dedicado isolation_level = dedicated_db eventos brutos em volume muito alto armazenar em azure data explorer, um database por tenant a definir com a camada de integração"}, {"id": "p-Arquitetura-Eventos", "t": "eventos", "x": "o service bus carrega avisos de que algo mudou no plano de controle. dados pesados dos clientes não passam por ele. como um evento nasce o serviço altera o próprio banco e grava o evento na tabela audit_outbox do seu schema, na mesma transação . o outbox relay lê os audit_outbox de todos os serviços e publica no service bus. depois de publicado, o registro é marcado como enviado. assim, um evento só existe se a alteração realmente aconteceu, e nenhum evento se perde se o service bus ou o core estiverem fora do ar. tópicos tópico conteúdo assinantes civitas-tenant ciclo de vida do tenant authentication (cache de tenants), core civitas-audit login, sessões, usuários, papéis core (grava em audit_events ) catálogo de eventos evento publica consome para quê tenant.created tenant authentication, core atualizar o cache de tenants; auditoria tenant.suspended tenant authentication, core bloquear logins na hora; auditoria tenant.reactivated tenant authentication, core liberar logins; auditoria tenant.decommissioned tenant authentication, core bloquear logins e iniciar a retenção tenant.modules_changed tenant core habilitar ou desabilitar módulos auth.login_succeeded authentication core auditoria de acesso auth.login_failed authentication core auditoria de acesso session.revoked authentication core auditoria, incluindo usuário desativado no idp user.invited user core auditoria; no futuro, e-mail de convite pelo notification user.activated user core auditoria do primeiro login user.disabled user core auditoria role.assigned rbac core auditoria de mudança de permissão role.revoked rbac core auditoria de mudança de permissão onde a auditoria é gravada evento destino com tenant_id audit_events no schema tenant_&lt;id&gt; do tenant sem tenant_id (ações globais da arx, criação de tenant antes do schema existir) auditoria global no schema tenancy formato comum campo conteúdo event_id id único, usado para descartar duplicatas type nome do evento, por exemplo tenant.created tenant_id tenant afetado; vazio para ações globais actor user_id e se é usuário arx occurred_at quando aconteceu correlation_id liga o evento à requisição original nos logs payload ids e o que mudou; nenhum dado pessoal além disso regras para os consumidores entrega pelo menos uma vez: o mesmo evento pode chegar duas vezes. todo consumidor verifica o event_id antes de processar. dead-letter queue: mensagem que falha várias vezes vai para a dlq e gera alerta. nunca é descartada em silêncio. ordem por tenant: o tenant_id é usado como sessão do service bus, para que, por exemplo, tenant.suspended nunca seja processado antes de tenant.created . o que não passa pelo service bus dados de monitoramento e de integrações (alto volume): event hubs, quando os conectores chegarem. consultas que precisam de resposta imediata: chamada http à api do outro serviço. mudança de papel no token: entra na próxima renovação do token."}, {"id": "p-Decisoes", "t": "decisões de arquitetura", "x": "toda decisão técnica relevante vira uma página aqui, com contexto, decisão, consequências e alternativas. use o modelo . uma decisão nunca é apagada: quando muda, a antiga fica com status substituída e aponta para a nova. status possíveis: proposta , aprovada , substituída , rejeitada . decisões internas de arquitetura são aprovadas pelo gestor do projeto; decisões que afetam regra de negócio, custo ou prazo são aprovadas pela diretoria. id decisão status adr-001 identidade e catálogo nos dois bancos existentes aprovada adr-002 dados de domínio em um schema por tenant aprovada adr-003 infraestrutura de apoio compartilhada proposta adr-004 login federado com entra id e google proposta adr-005 contas locais break-glass no authentication service proposta adr-006 identificadores imutáveis proposta adr-007 token civitas curto com revalidação no idp proposta adr-008 claims do token civitas proposta adr-009 dois repositórios, um container app por serviço aprovada adr-010 comunicação entre serviços: http para consultas, outbox e service bus para eventos aprovada adr-011 acesso da arx auditado proposta adr-012 api gateway entra depois proposta adr-013 cache de tenants no authentication aprovada adr-014 administrador do cliente como usuário normal aprovada"}, {"id": "p-Decisoes-Modelo-ADR", "t": "adr-000 — título curto da decisão", "x": "copie esta página, troque o número e o título. uma decisão por página. campo valor status proposta data aaaa-mm-dd responsável nome aprovado por nome (diretoria, quando afeta custo, prazo ou regra de negócio) contexto qual problema ou necessidade levou a esta decisão. cite regras de negócio (rn-xx) quando houver. decisão o que foi decidido, em uma ou duas frases afirmativas. consequências o que fica mais fácil, o que fica mais difícil, o que precisa ser feito por causa disso. alternativas consideradas alternativa por que não"}, {"id": "p-Decisoes-ADR-001-Plano-de-Controle-Compartilhado", "t": "adr-001 — identidade e catálogo nos dois bancos existentes", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto já existem dois bancos em uso: cp_identity (civitas-auth) e civitas_db (civitas-api). tenants, usuários, papéis e configurações de login têm pouco volume e são consultados em toda requisição. decisão manter os dois bancos, organizados por schema: cp_identity com auth , identity e rbac ; civitas_db com tenancy (catálogo global). cada serviço tem um usuário de banco com acesso só ao próprio schema. tabelas compartilhadas com dado de tenant têm tenant_id e row-level security. não há foreign key nem join entre schemas de serviços diferentes. consequências cada serviço é dono dos próprios dados sem migração de banco. o banco bloqueia acesso entre tenants mesmo se o código esquecer o filtro. alternativas consideradas alternativa por que não um único banco com todos os schemas exigiria migrar os bancos existentes sem ganho nesta fase um banco por serviço mais custo e operação para o tamanho atual do time"}, {"id": "p-Decisoes-ADR-002-Um-Schema-por-Tenant", "t": "adr-002 — dados de domínio em um schema por tenant", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto o volume de dados por cliente é muito grande, vindo de várias ferramentas de segurança. dados de clientes diferentes não podem crescer nas mesmas tabelas. decisão cada tenant tem o seu próprio schema tenant_&lt;id&gt; no banco civitas_db , criado no provisionamento. todos os dados de domínio do cliente ficam nele. o schema ativo é definido por set local search_path a partir do tenant do token, dentro da transação. detalhes em isolamento de dados . consequências isolamento físico de tabelas por cliente, exclusão e exportação simples, índices menores. em troca, toda migração de domínio precisa rodar em todos os schemas de tenant, o que exige automação no pipeline. alternativas consideradas alternativa por que não tabelas compartilhadas com coluna tenant_id volume de todos os clientes nas mesmas tabelas; exclusão de um cliente vira delete em massa um banco por tenant mais custo e operação agora; fica como evolução para clientes grandes ( dedicated_db )"}, {"id": "p-Decisoes-ADR-003-Infraestrutura-Compartilhada", "t": "adr-003 — infraestrutura de apoio compartilhada", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto cache, busca e mensageria não justificam uma instância por tenant. decisão redis com prefixo de chave por tenant, busca com índice por tenant e mensageria com tenant_id obrigatório em toda mensagem. consequências segue a tabela de isolamento do cab. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-004-Login-Federado", "t": "adr-004 — login federado com entra id e google", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto rn-01: o cliente não cria conta nova. decisão aplicativo multi-tenant no entra id e oidc do google. o civitas não guarda senha de usuário de cliente. consequências segurança e mfa ficam com o idp do cliente. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-005-Contas-Break-Glass", "t": "adr-005 — contas locais break-glass no authentication service", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto rn-02 e rn-03: contas locais só para administração e recuperação. decisão senha com hash argon2id e mfa totp obrigatório ( mfa_policy , mfa_challenges ); segredo totp no key vault. consequências não depende de idp externo para recuperar acesso. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-006-Identificadores-Imutaveis", "t": "adr-006 — identificadores imutáveis", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por a preencher contexto rn-06 e rn-07: nada de vínculo por domínio ou e-mail. decisão organização entra = tid ; usuário entra = tid + oid ; usuário google = sub . organização google = domínio ( hd ), conforme rn-16. consequências mudança de e-mail ou domínio no cliente não quebra o acesso. para google, o token não traz identificador imutável da empresa, então a organização é vinculada pelo domínio (rn-16). se a empresa trocar de domínio, o administrador do cliente atualiza o domínio no civitas; os usuários continuam vinculados pelo sub , que não muda. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-007-Token-e-Revogacao", "t": "adr-007 — token civitas curto com revalidação no idp", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por diretoria, 2026-10-09 (p-01) contexto rn-08: usuário desativado no idp perde o acesso sem ação manual. decisão o civitas emite jwt curto, assinado com chave no key vault. a cada renovação, revalida junto ao idp; recusa do idp revoga a sessão. a duração é um parâmetro de configuração, com padrão de 10 minutos. consequências janela máxima de exposição de 10 minutos (rn-14). a renovação é silenciosa: o usuário não precisa entrar de novo a cada 10 minutos, só perde o acesso quando o idp recusa. por isso uma tela aberta numa tv do soc continua funcionando enquanto o usuário estiver ativo no idp. o modo painel (rn-15) muda o tempo de inatividade, nunca a revalidação no idp (ver p-10). alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-008-Claims-do-Token", "t": "adr-008 — claims do token civitas", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto todo serviço precisa saber usuário, tenant e papéis sem consultar outro serviço. decisão claims sub , tid (tenant ativo), roles , arx . consequências mudança de papel vale na próxima renovação. o tid do token é a única fonte para escolher o schema do tenant. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-009-Repositorios-e-Deploy", "t": "adr-009 — dois repositórios, um container app por serviço", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto rn-11 exige serviços separados. já existem os repositórios civitas-auth e civitas-api , e o time tem dois desenvolvedores. decisão manter os dois repositórios: civitas-auth com authentication, user e rbac; civitas-api com tenant e core. cada serviço é publicado como um container app próprio. token, contexto de tenant, logs e auditoria ficam em um pacote comum no azure artifacts, usado pelos dois repositórios. consequências atende a rn-11 sem migração de repositório. serviços que hoje são módulos precisam trocar chamadas internas por http. alternativas consideradas alternativa por que não monorepo com todos os serviços migração sem entrega visível nesta fase; pode ser reavaliada depois um repositório por serviço multiplica pipelines e configuração para um time de dois devs"}, {"id": "p-Decisoes-ADR-010-Comunicacao-entre-Servicos", "t": "adr-010 — comunicação entre serviços: http para consultas, outbox e service bus para eventos", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto serviços precisam consultar uns aos outros e avisar sobre mudanças, sem perder eventos e sem criar dependência de disponibilidade entre eles. decisão consultas imediatas por http com x-civitas-service-token . avisos de mudança gravados em audit_outbox na mesma transação da alteração; um outbox relay (container app no civitas-api ) publica no service bus, nos tópicos civitas-tenant e civitas-audit . catálogo de eventos em eventos . consequências nenhum evento se perde; serviços não precisam estar no ar ao mesmo tempo. consumidores precisam ser idempotentes, e a dlq precisa de alerta. alternativas consideradas alternativa por que não publicar direto no service bus no código evento pode ser publicado sem a alteração ter sido gravada, ou o contrário só chamadas http acopla a disponibilidade dos serviços e perde auditoria quando o core está fora"}, {"id": "p-Decisoes-ADR-011-Acesso-ARX-Auditado", "t": "adr-011 — acesso da arx auditado", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto rn-09: a arx acessa qualquer tenant. decisão papel de escopo global; toda ação de usuário arx em tenant de cliente gera auditoria marcada. consequências rastro exigível por clientes de segurança. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-012-API-Gateway-Depois", "t": "adr-012 — api gateway entra depois", "x": "campo valor status proposta data 2026-10 responsável jonas alfonso aprovado por a preencher contexto hoje há poucos serviços expostos ao front. decisão validação de token e tenant pelo pacote comum em cada serviço; api management (ou kong) quando houver mais serviços expostos. consequências não trava a entrega atual; o pacote é reaproveitado pelo gateway. alternativas consideradas a preencher."}, {"id": "p-Decisoes-ADR-013-Cache-de-Tenants", "t": "adr-013 — cache de tenants no authentication", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto no desenho inicial, todo login consultava o tenant service. se o civitas-api caísse, ninguém entraria na plataforma, nem a arx para resolver o problema. decisão o authentication mantém a tabela auth.tenant_status_cache , atualizada pelos eventos do tópico civitas-tenant . o login consulta o cache; get /internal/tenants/{id} é usado só quando o tenant não está no cache. o login local da arx (break-glass) nunca depende do tenant service. consequências login independente do civitas-api . uma suspensão de tenant leva o tempo de entrega do evento (segundos) para valer no login. alternativas consideradas alternativa por que não consulta http a cada login login para se o civitas-api cair"}, {"id": "p-Decisoes-ADR-014-Admin-como-Usuario-Normal", "t": "adr-014 — administrador do cliente como usuário normal", "x": "campo valor status aprovada data 2026-10 responsável jonas alfonso aprovado por jonas alfonso, 2026-10-08 contexto o desenho inicial tinha tenancy.tenant_admin_users , separado de identity.users : duas fontes de verdade sobre quem é usuário. decisão o administrador local do cliente é criado no provisionamento como usuário normal em identity.users , com credencial break-glass em auth.local_credentials e o papel tenant admin em rbac.tenant_memberships . a tabela tenancy.tenant_admin_users é removida; o provisionamento registra a criação em tenancy.provisioning_steps . consequências uma única fonte de verdade para usuários e permissões. o provisionamento passa a chamar user, authentication e rbac. alternativas consideradas alternativa por que não manter tenant_admin_users no tenancy duplica usuário e permissão entre dois serviços e dois bancos"}, {"id": "p-Servicos", "t": "serviços", "x": "uma página por serviço, sempre no mesmo formato ( modelo ). a página é atualizada junto com o pull request que muda o serviço. serviço responsabilidade repositório banco · schema situação authentication login federado e local, mfa, token civitas, jwks, sessões, cache de tenants civitas-auth cp_identity · auth em desenvolvimento user usuários e convites civitas-auth cp_identity · identity em desenvolvimento rbac papéis, permissões e vínculos usuário–tenant civitas-auth cp_identity · rbac em desenvolvimento tenant ciclo de vida, provisionamento, catálogo e criação do schema do tenant civitas-api civitas_db · tenancy em desenvolvimento core dados de domínio: auditoria e monitoring civitas-api civitas_db · tenant_&lt;id&gt; (um por tenant) em desenvolvimento outbox relay publica os audit_outbox no service bus civitas-api leitura dos audit_outbox a fazer cada serviço é publicado como um container app próprio, mesmo quando divide repositório com outros ( adr-009 ). requisitos para todos os serviços segredos só no key vault, via identidade gerenciada; o x-civitas-service-token também. usar o pacote comum para validar token, aplicar o contexto de tenant, logar e auditar. serviços que acessam schema de tenant usam sempre set local search_path dentro da transação, definido pelo token. usuário de banco com acesso só ao próprio schema; sem foreign key ou join entre schemas de serviços diferentes. todo log tem correlation_id , tenant_id e user_id , enviado ao application insights. ações sensíveis gravam em audit_outbox na mesma transação. especificação openapi publicada e linkada na página do serviço. teste de isolamento obrigatório: usuário do tenant a não lê nada do tenant b."}, {"id": "p-Servicos-Modelo-de-Servico", "t": "nome do serviço", "x": "copie esta página para documentar um serviço novo. campo valor responsável nome repositório civitas-auth ou civitas-api container app nome banco · schema banco · schema openapi link situação em desenvolvimento / em produção responsabilidade o que o serviço faz e, em uma frase, o que ele não faz. dados tabela conteúdo observação endpoints método caminho faz permissão chamadas e eventos para / de como quando regras de implementação regras que não estão óbvias no código. pontos a confirmar dúvidas abertas com o time, com link para pendências . como testar passos para verificar que funciona, incluindo o teste de isolamento."}, {"id": "p-Servicos-Authentication", "t": "authentication service", "x": "campo valor responsável felipe repositório civitas-auth container app authentication banco · schema cp_identity · auth openapi a preencher situação em desenvolvimento responsabilidade responde: quem é você e esta sessão ainda vale? faz o login federado (entra id, google, saml) e local, aplica mfa, emite e renova o token civitas, publica as chaves (jwks) e revoga sessões. não cuida de cadastro de usuários (user), permissões (rbac) nem de tenants (tenant). como o tenant é identificado no login o usuário clica em \"entrar com microsoft\" sem informar o tenant. o token do entra traz o tid da organização; o serviço procura o tenant civitas vinculado a esse tid e confirma no cache de tenants ( tenant_status_cache ) que ele está ativo. só se o tenant não estiver no cache, consulta o tenant service ( get /internal/tenants/{id} ). sem vínculo ativo, o login é recusado com \"organização não habilitada\". dados (schema auth ) tabela conteúdo sessions sessões ativas e revogadas, tenant ativo, referência criptografada ao refresh token do idp mfa_challenges desafios de mfa em andamento mfa_policy política de mfa por tenant auth_config configuração de login por tenant authorized_domains domínios e organizações de idp autorizados por tenant saml_providers provedores saml configurados pelo cliente local_credentials senha (argon2id) e referência ao segredo totp dos administradores locais (break-glass) tenant_status_cache status de cada tenant, atualizado pelos eventos tenant.* ( adr-013 ) audit_outbox eventos de auditoria a publicar para o core chaves de assinatura no key vault, publicadas em /.well-known/jwks.json . endpoints método caminho faz get /auth/login/{provider} inicia o login (entra, google, saml) get /auth/callback/{provider} recebe o retorno do idp, resolve tenant e usuário, cria a sessão post /auth/local/login login break-glass; sempre segue para o mfa post /auth/local/mfa valida o código totp e cria a sessão post /auth/token/refresh renova o token civitas e revalida no idp post /auth/tenant/switch troca o tenant ativo, se houver vínculo post /auth/logout encerra a sessão post /auth/sessions/{id}/revoke revogação administrativa get /.well-known/jwks.json chaves públicas para validar tokens chamadas internas para como quando user http + x-civitas-service-token encontrar ou vincular o usuário no login rbac http + x-civitas-service-token buscar os papéis do usuário no tenant para montar o token tenant get /internal/tenants/{id} só quando o tenant não está no cache service bus (assina civitas-tenant ) evento atualizar o cache de tenants regras de implementação um tenant pode ter várias organizações entra (vários tid ) e domínios google autorizados em authorized_domains (rn-20, rn-16). depois do primeiro login, a busca do usuário é sempre pelo identificador imutável do idp ( tid + oid no entra, sub no google). o e-mail nunca identifica. a duração do token é parâmetro de configuração (padrão 10 minutos, ver p-01). renovação recusada pelo idp por usuário desativado revoga a sessão. falha de rede no idp não revoga. login local: tentativas erradas seguidas bloqueiam a conta temporariamente (valores em configuração). eventos publicados auth.login_succeeded , auth.login_failed , session.revoked (via audit_outbox ). ver eventos ."}, {"id": "p-Servicos-User", "t": "user service", "x": "campo valor responsável wanderson (revisão do felipe) repositório civitas-auth container app user banco · schema cp_identity · identity openapi a preencher situação em desenvolvimento responsabilidade guarda quem são os usuários e cuida dos convites. o usuário é global: uma pessoa tem um único cadastro e pode ter acesso a mais de um tenant. não guarda papéis (rbac) nem credenciais (authentication). dados (schema identity ) tabela conteúdo users cadastro do usuário e status, incluindo administradores locais e usuários arx external_identities vínculo imutável com o idp: tid + oid (entra) ou sub (google); único por provedor invitations convites pendentes por tenant e e-mail, com os papéis a atribuir audit_outbox eventos de auditoria a publicar para o core endpoints método caminho faz post /tenants/{tenantid}/invitations convida um usuário por e-mail, já com papéis get /tenants/{tenantid}/users lista usuários do tenant patch /tenants/{tenantid}/users/{userid} altera nome ou status get /me dados do usuário logado get /me/tenants tenants a que o usuário tem acesso post /internal/users/resolve interno (authentication): encontra ou vincula o usuário no login regras de implementação primeiro login de um convidado: com convite pendente para aquele e-mail no tenant do tid , cria a external_identities , ativa o usuário, aceita o convite e pede ao rbac o vínculo com os papéis do convite. sem convite, o login é recusado. depois disso, mudar o e-mail no idp do cliente não afeta o acesso. usuários arx não precisam de vínculo por tenant; o acesso vem do papel global no rbac. um usuário de cliente pode ter vínculo com mais de um tenant (rn-17). depois do login, ele escolhe o tenant ativo em /me/tenants e troca por /auth/tenant/switch . eventos publicados user.invited , user.activated , user.disabled (via audit_outbox )."}, {"id": "p-Servicos-RBAC", "t": "rbac service", "x": "campo valor responsável wanderson (revisão do felipe) repositório civitas-auth container app rbac banco · schema cp_identity · rbac openapi a preencher situação em desenvolvimento responsabilidade responde: o que este usuário pode fazer neste tenant? guarda papéis, permissões e as atribuições de papel por tenant. a checagem acontece em cada serviço, com os papéis que vêm no token. papéis iniciais (proposta, validar em p-04 e p-10) papel escopo pode arx platform admin todos os tenants tudo, inclusive criar, suspender e desativar tenants arx operator todos os tenants operar e configurar qualquer tenant, sem criar nem desativar tenant admin um tenant domínios, sso, convites, papéis do tenant tenant analyst um tenant módulos contratados e relatórios tenant viewer um tenant somente leitura tenant panel (proposta, p-10) um tenant somente leitura de painéis, para tv do soc; sessão sem expiração por inatividade os papéis são criados por migração (dados iniciais), não fixos no código. permissões no formato recurso:ação ( tenant:create , users:invite , sso:configure , roles:assign , reports:read ). dados (schema rbac ) tabela conteúdo roles papéis role_permissions permissões de cada papel tenant_memberships vínculo usuário–tenant com os papéis dele, com tenant_id + row-level security; papéis globais da arx ficam com tenant_id vazio audit_outbox eventos de auditoria a publicar para o core endpoints método caminho faz get /roles lista papéis e permissões post /tenants/{tenantid}/assignments atribui papel a um usuário no tenant delete /tenants/{tenantid}/assignments/{id} remove o papel get /internal/users/{userid}/roles?tenant={tenantid} interno (authentication): papéis para montar o token regras de implementação cada serviço checa permissão pelo pacote comum ( require(\"users:invite\") ), nunca pelo nome do papel. um tenant sempre tem pelo menos um tenant admin; remover o último é recusado. eventos publicados role.assigned , role.revoked (via audit_outbox )."}, {"id": "p-Servicos-Tenant", "t": "tenant service", "x": "campo valor responsável felipe repositório civitas-api container app tenant banco · schema civitas_db · tenancy (catálogo) + criação dos schemas tenant_&lt;id&gt; openapi a preencher situação em desenvolvimento responsabilidade mantém o catálogo de todos os tenants, cuida do ciclo de vida (criação, suspensão, desativação) e cria o schema próprio de cada tenant no provisionamento. ciclo de vida e passos de provisionamento em tenants ; modelo de isolamento em isolamento de dados . dados (schema tenancy ) tabela conteúdo tenants cadastro do tenant, status, nível de isolamento e schema_name (nome do schema do tenant) tenant_modules módulos habilitados para o tenant tenant_contracts dados de contrato e licença tenant_drafts rascunhos de tenant ainda não provisionados (cadastro em andamento no secops) provisioning_steps passos do provisionamento e status de cada um, para retomar após falha platform_audit_events auditoria de ações sem tenant (ações globais da arx) audit_outbox eventos tenant.* a publicar endpoints método caminho faz post /tenants cria o tenant e inicia o provisionamento (arx platform admin) get /tenants lista tenants get /tenants/{id} detalhe e status post /tenants/{id}/suspend · /reactivate · /decommission ciclo de vida get /internal/tenants/{id} interno (authentication e core): status do tenant e nome do schema regras de implementação o schema é sempre tenant_&lt;id&gt; , com o identificador imutável do tenant. criar o schema e aplicar as migrações são passos idempotentes: rodar de novo depois de uma falha não quebra nada. o tenant só vai para active depois que o schema existe e está na versão atual das migrações. eventos publicados tenant.created , tenant.suspended , tenant.reactivated , tenant.decommissioned , tenant.modules_changed (tópico civitas-tenant ). o administrador do cliente não é guardado aqui: o tenant service pede ao user, authentication e rbac que o criem ( adr-014 )."}, {"id": "p-Servicos-Core", "t": "core service", "x": "campo valor responsável felipe repositório civitas-api container app core banco · schema civitas_db · tenant_&lt;id&gt; (um schema por tenant) openapi a preencher situação em desenvolvimento responsabilidade guarda e serve os dados de domínio de cada cliente. hoje: auditoria e monitoring. depois: ativos, findings e os dados dos módulos de produto. todo dado do core vive dentro do schema do tenant. dados (em cada schema tenant_&lt;id&gt; ) tabela conteúdo audit_events trilha de auditoria do tenant, alimentada pelos audit_outbox dos serviços monitoring_* dados de monitoramento do tenant regras de implementação toda consulta roda dentro de uma transação com set local search_path to tenant_&lt;id&gt; , com o tenant tirado do token pelo pacote comum. nenhuma tabela do core é criada no schema public . novas tabelas de domínio são criadas por migração aplicada a todos os schemas de tenant. auditoria visível ao cliente o cliente vê a auditoria do próprio tenant, incluindo todo acesso e ação de usuários arx, identificados como tal (rn-18). eventos consumidos assina civitas-tenant e civitas-audit . eventos com tenant_id vão para audit_events no schema do tenant; eventos sem tenant vão para tenancy.platform_audit_events . todo evento é verificado pelo event_id antes de gravar."}, {"id": "p-Servicos-Outbox-Relay", "t": "outbox relay", "x": "campo valor responsável felipe repositório civitas-api container app outbox relay (worker, sem endpoint público) banco · schema leitura dos audit_outbox em cp_identity ( auth , identity , rbac ) e civitas_db ( tenancy ) situação a fazer responsabilidade lê os registros pendentes das tabelas audit_outbox de todos os serviços, publica no service bus e marca como enviados. não interpreta nem altera eventos. regras de implementação publica no tópico definido pelo tipo do evento: tenant.* em civitas-tenant , o resto em civitas-audit . usa o tenant_id como sessão do service bus, para manter a ordem por tenant. marca como enviado só depois da confirmação do service bus. se cair no meio, republica; os consumidores descartam a duplicata pelo event_id . registros enviados há mais de 30 dias são apagados do outbox (valor em configuração). alerta quando há registros pendentes há mais de 5 minutos (valor em configuração). catálogo de eventos em eventos ."}, {"id": "p-Tenants", "t": "tenants", "x": "criar um tenant não sobe serviços novos: cria o registro no catálogo, o schema próprio do cliente no civitas_db e o administrador local do cliente. onde fica cada dado está em isolamento de dados . ciclo de vida statediagram-v2 [*] --&gt; draft draft --&gt; provisioning provisioning --&gt; active provisioning --&gt; provisioning_failed provisioning_failed --&gt; provisioning: nova tentativa active --&gt; suspended suspended --&gt; active suspended --&gt; decommissioning decommissioning --&gt; deleted deleted --&gt; [*] estado significa draft cadastro em andamento no secops ( tenant_drafts ) provisioning schema e recursos sendo criados provisioning_failed algum passo falhou; nada exposto ao cliente active em uso suspended logins bloqueados, dados mantidos decommissioning período de retenção antes da exclusão (30 dias, rn-19; parâmetro de configuração) deleted schema e arquivos apagados; resta o registro mínimo para auditoria provisionamento cada passo é idempotente. registrar o tenant em tenancy.tenants com status provisioning . criar o schema tenant_&lt;id&gt; no civitas_db . aplicar no schema todas as migrações de domínio. registrar no catálogo o nome do schema. registrar módulos ( tenant_modules ) e contrato ( tenant_contracts ). criar o administrador local do cliente como usuário normal (user) com credencial break-glass e mfa obrigatório no primeiro acesso (authentication) — rn-04, adr-014. vincular esse usuário ao tenant com o papel tenant admin (rbac). mudar o status para active e gravar tenant.created no audit_outbox ; o authentication atualiza o cache ao receber o evento. descomissionamento suspender: logins bloqueados, dados mantidos. iniciar decommissioning : começa o período de retenção (30 dias, rn-19; exportação ao cliente em p-05). ao fim do período: exportar o schema se o contrato pedir, executar drop schema tenant_&lt;id&gt; cascade e apagar os arquivos do tenant. manter só o registro mínimo do tenant e a trilha de auditoria. a rotina automática de exclusão (passo 3) não faz parte da sprint atual."}, {"id": "p-Fluxos", "t": "fluxos", "x": "login com conta microsoft graph td a[clica em entrar com microsoft] --&gt; b[entra devolve tid e oid] b --&gt; c{tid vinculado a tenant ativo?} c --&gt;|não| r1[recusa: organização não habilitada] c --&gt;|sim| d{oid já vinculado?} d --&gt;|sim| s[cria a sessão e o token civitas] d --&gt;|não| e{convite pendente para o e-mail?} e --&gt;|não| r2[recusa: usuário sem convite] e --&gt;|sim| f[vincula oid e aceita o convite] f --&gt; s criação de tenant sequencediagram participant secops as civitas-secops participant tenant participant db as civitas_db participant auth as civitas-auth secops-&gt;&gt;tenant: post /tenants tenant-&gt;&gt;db: insert em tenancy.tenants (provisioning) tenant-&gt;&gt;db: create schema tenant_&lt;id&gt; tenant-&gt;&gt;db: aplica migrações de domínio no schema tenant-&gt;&gt;db: grava módulos e contrato tenant-&gt;&gt;auth: cria admin (user), credencial break-glass (authentication) e vínculo tenant admin (rbac) tenant-&gt;&gt;db: status active + tenant.created no audit_outbox tenant--&gt;&gt;secops: tenant pronto note over auth: outbox relay publica tenant.created e o authentication atualiza o cache de tenants requisição de dados de um cliente sequencediagram participant front as civitas-secops participant core participant tenant participant db as civitas_db front-&gt;&gt;core: get /monitoring (token com tid = a) core-&gt;&gt;tenant: get /internal/tenants/a (com cache local) tenant--&gt;&gt;core: schema_name tenant_a, status active core-&gt;&gt;db: begin core-&gt;&gt;db: set local search_path to tenant_a core-&gt;&gt;db: select ... from monitoring_* core-&gt;&gt;db: commit core--&gt;&gt;front: dados só do tenant a usuário desativado no idp o administrador do cliente desativa o usuário no entra. na próxima renovação do token (até 10 minutos, p-01), o authentication tenta renovar junto ao entra. o entra recusa, a sessão é revogada e o front volta para a tela de login. usuário arx acessa um tenant de cliente o usuário arx entra pela conta da arx. no secops, escolhe o tenant; /auth/tenant/switch emite token com o tid do cliente e arx = true . cada ação gera auditoria marcada como acesso arx."}, {"id": "p-DevOps", "t": "devops", "x": "como o civitas é construído, publicado e monitorado. página conteúdo ambientes ambientes, assinaturas e acessos pipeline e deploy como o código chega à produção observabilidade logs, métricas, alertas migrações de banco como alterar o banco de controle e os bancos de tenant"}, {"id": "p-DevOps-Ambientes", "t": "ambientes", "x": "ambiente uso assinatura / resource group url quem publica desenvolvimento testes dos devs a preencher a preencher pipeline, a cada merge homologação validação do po antes da review a preencher a preencher pipeline, manual produção clientes e demonstrações a preencher a preencher pipeline, com aprovação do po acessos pessoa desenvolvimento homologação produção regras região brazil south em todos os ambientes. nenhum recurso criado manualmente no portal sem registro aqui. segredos de cada ambiente em key vault próprio."}, {"id": "p-DevOps-Pipeline-e-Deploy", "t": "pipeline e deploy", "x": "repositórios repositório conteúdo publica civitas-secops front de operação front civitas-auth authentication, user, rbac um container app por serviço civitas-api tenant, core um container app por serviço pacote comum token, contexto de tenant, logs, auditoria versão no azure artifacts estrutura de pastas de cada repositório: a preencher pelo felipe. fluxo branch por história, nome feature/&lt;id-da-historia&gt; . pull request com revisão obrigatória do dev sênior. o pipeline roda testes, incluindo os de isolamento entre tenants. merge publica em desenvolvimento. publicação em homologação e produção a pedido do po. checklist do pull request ☐ testes passando, incluindo isolamento entre tenants ☐ migração de domínio testada em mais de um schema de tenant, se houver ☐ página do serviço na wiki atualizada ☐ openapi atualizada ☐ decisão nova registrada em decisões, se houver"}, {"id": "p-DevOps-Observabilidade", "t": "observabilidade", "x": "item ferramenta situação logs application insights a preencher métricas azure monitor a preencher rastreamento entre serviços application insights (correlation_id) a preencher alertas azure monitor a preencher campos obrigatórios em todo log timestamp , service , correlation_id , tenant_id , user_id , level , message . alertas mínimos alerta condição quem recebe serviço fora do ar a preencher a preencher falhas de login acima do normal a preencher a preencher provisionamento com falha qualquer tenant em provisioning_failed a preencher"}, {"id": "p-DevOps-Migracoes-de-Banco", "t": "migrações de banco", "x": "existem dois tipos de migração, com regras diferentes. migrações de controle schemas auth , identity , rbac ( cp_identity ) e tenancy ( civitas_db ). rodam uma vez, no repositório do serviço dono do schema. nenhum serviço altera schema de outro. migrações de domínio (schemas de tenant) tabelas do core e dos módulos de produto. precisam chegar a todos os schemas tenant_&lt;id&gt; . a migração é escrita e versionada uma única vez no civitas-api . no deploy, o pipeline lista os schemas de tenant no catálogo ( tenancy.tenants ) e aplica a migração em cada um. a versão aplicada fica registrada dentro de cada schema (tabela de controle da ferramenta de migração). falha em um schema não bloqueia os outros: o tenant fica marcado para nova tentativa e gera alerta. um tenant novo recebe todas as migrações no provisionamento. regras para escrever migração de domínio compatível com a versão anterior do código (adicionar coluna antes de usar, remover só depois). sem nome de schema escrito na migração: ela roda com o search_path do tenant. testada em pelo menos dois schemas de tenant antes do merge. ferramenta de migração: a preencher pelo felipe."}, {"id": "p-Sprints", "t": "sprints", "x": "sprints de 2 semanas, com sprint review para a diretoria ao final. cada sprint tem uma página criada a partir do modelo . sprint período objetivo resultado autenticação e tenants até 2026-10-16 (sexta-feira) serviços de identidade e tenants em produção, com schema por tenant em andamento formato da sprint review objetivo da sprint e o que foi entregue (5 min). arquitetura e backend: o que foi construído, onde roda, decisões tomadas (15 min). demonstração funcionando em produção (10 min). o que não foi entregue e por quê, com nova data (5 min). próxima sprint, riscos e decisões necessárias (5 min)."}, {"id": "p-Sprints-Modelo-de-Sprint", "t": "sprint n — objetivo", "x": "campo valor período aaaa-mm-dd a aaaa-mm-dd objetivo uma frase data da review aaaa-mm-dd histórias história responsável pronto quando status decisões tomadas na sprint links para as páginas em decisões. resultado da review entregue: não entregue e por quê: feedback da diretoria: ações para a próxima sprint"}, {"id": "p-Sprints-Sprint-Autenticacao-e-Tenants", "t": "sprint — autenticação e tenants", "x": "campo valor período até 2026-10-16 (sexta-feira) objetivo authentication, user, rbac, tenant e core publicados como container apps; criar tenant com schema próprio e entrar com conta microsoft ponta a ponta checkpoint com a diretoria mensagem de status até 2026-10-14 situação em 2026-10-13 5 serviços separados e publicados no azure; bancos e schemas de serviço criados; serviço de autenticação (login local, token e sessões) em testes finais; login microsoft e google previsto para 2026-10-16; parte de tenants até 2026-10-15 data da review 2026-10-16 (sexta-feira) histórias história responsável pronto quando status pacote comum no azure artifacts (token, tenant, logs, auditoria) felipe usado pelo civitas-auth e pelo civitas-api a fazer pipelines com um container app por serviço felipe cada serviço publica sozinho feito: 5 serviços publicados no azure schema por tenant: criação no provisionamento e set local search_path felipe tenant criado ganha tenant_&lt;id&gt; ; teste de pool com dois tenants passa em andamento, previsto para 2026-10-15 migrações de domínio em todos os schemas de tenant felipe migração nova chega a todos os schemas pelo pipeline a fazer usuários de banco por serviço e row-level security no cp_identity felipe cada serviço só acessa o próprio schema a fazer authentication: login entra, token, jwks, renovação felipe usuário entra com microsoft; desativado perde a sessão previsto para 2026-10-16 authentication: login google workspace (oidc), empresa vinculada pelo domínio hd , usuário pelo sub felipe usuário google de domínio autorizado entra; domínio não autorizado é recusado previsto para 2026-10-16 telas do cliente: autorizar domínio google e vincular mais de uma organização microsoft wanderson admin do cliente configura google e duas organizações entra no mesmo tenant a fazer authentication: base do serviço (login local, token, jwks, sessões) felipe login local funciona e emite token validado pelos outros serviços em testes finais login local com mfa (break-glass) felipe admin local entra com senha + código em testes finais separar user e rbac em container apps próprios felipe chamadas por http + x-civitas-service-token ; se não couber, data comunicada no checkpoint feito outbox relay e tópicos civitas-tenant / civitas-audit no service bus felipe evento gravado no outbox chega ao core; duplicata é descartada a fazer cache de tenants no authentication felipe login funciona com o civitas-api parado; suspensão bloqueia login em segundos a fazer mover audit_events e monitoring_* para os schemas de tenant felipe nenhuma tabela de domínio fica nos schemas compartilhados audit e monitoring junto com a parte de tenants remover tenant_admin_users : admin vira usuário normal felipe provisionamento cria o admin via user, authentication e rbac a fazer user: convites e resolução no login wanderson convidado entra e o identificador do idp fica vinculado a fazer rbac: papéis iniciais e atribuição por tenant wanderson papéis no token; último tenant admin protegido a fazer secops: criar, listar e suspender tenant wanderson arx cria tenant e vê o status a fazer telas do cliente: entra, convites, papéis wanderson admin do cliente configura sem ajuda da arx a fazer documentação dos serviços na wiki jonas, felipe e wanderson páginas atualizadas com openapi em andamento roteiro do teste ponta a ponta ☐ criar o tenant a pelo secops e confirmar que o schema tenant_&lt;id&gt; existe no civitas_db ☐ criar o tenant b e confirmar o segundo schema ☐ entrar como administrador local do tenant a e configurar o mfa ☐ vincular o entra id de teste ao tenant a ☐ vincular uma segunda organização entra ao mesmo tenant e entrar com usuário dela ☐ autorizar um domínio google e entrar com usuário google ☐ convidar um usuário e atribuir tenant analyst ☐ entrar com esse usuário pela conta microsoft ☐ gerar dados de monitoring no tenant a e confirmar que não aparecem no tenant b ☐ desativar o usuário no entra e confirmar a perda de acesso em até 10 minutos ☐ entrar como usuário arx e acessar o tenant a ☐ conferir a auditoria ( audit_events no schema do tenant e platform_audit_events para a criação do tenant) ☐ parar o container app do tenant e confirmar que o login continua funcionando ☐ suspender o tenant a e confirmar que os logins dele são bloqueados"}, {"id": "p-Pendencias", "t": "pendências", "x": "atualizado em 2026-10-09. para a diretoria perguntas de regra de negócio, sempre com a recomendação técnica. nenhuma trava a sprint atual: o time segue a orientação provisória até a resposta. id pergunta recomendação orientação provisória para o time status p-04 quais tipos de usuário existem dentro de um cliente? (ver pergunta reformulada abaixo) administrador, analista, leitura papéis como dados iniciais por migração reenviada à diretoria p-05 no cancelamento, o cliente recebe uma exportação dos dados antes da exclusão em 30 dias? sim, sob pedido, durante os 30 dias nada a implementar nesta sprint aguardando diretoria p-10 modo painel para tv do soc: confirmar a proposta abaixo usuário de painel, só leitura, sem expiração por inatividade, mas revogado se desativado no idp nada nesta sprint aguardando diretoria p-04 reformulada dentro de um cliente, quais tipos de usuário existem? proposta: tipo o que faz administrador do cliente configura login (microsoft ou google), convida pessoas e define o que cada uma pode fazer analista usa os módulos contratados e gera relatórios leitura só visualiza painel (p-10) só leitura de painéis, para ficar aberto na tv do soc na arx: administrador da plataforma (cria, suspende e desativa clientes) e operador (opera e configura qualquer cliente, sem criar nem desativar). falta ou sobra algum tipo? p-10 modo painel a sessão não cai a cada 10 minutos: a renovação é automática e invisível. o usuário só perde o acesso quando é desativado no microsoft ou no google do cliente. para a tv do soc, a proposta é um usuário de painel, só leitura, cuja sessão não expira por falta de uso. ele continua perdendo o acesso em até 10 minutos se for desativado no idp, porque desligar essa checagem deixaria uma tela com dados do cliente aberta sem controle. internas do time pontos técnicos a fechar entre o gestor do projeto e os devs. id ponto responsável status i-06 os serviços no azure rodam em container apps ou app service? ( civitas-api-stage aparece como app service) felipe aberto i-07 onde ficam a senha e o totp dos admins locais (não há local_credentials no auth ) felipe aberto i-08 diferença entre identity_links e user_identities , e entre auth.authorized_domains e identity.tenant_idp_links felipe aberto resolvidas id ponto resolução data i-09 data do login microsoft e google até 2026-10-16 2026-10-13 i-05 separar user e rbac em serviços próprios feito: 5 serviços publicados separadamente 2026-10-13 p-01 tempo para usuário desativado perder o acesso 10 minutos (rn-14); pedido de modo painel para tv do soc (rn-15, detalhe em p-10) 2026-10-09 p-02 vínculo de empresa google pelo domínio (rn-16) 2026-10-09 p-05 retenção após cancelamento 30 dias (rn-19); exportação ainda em aberto 2026-10-09 p-06 usuário em mais de um tenant permitido (rn-17) 2026-10-09 p-08 cliente vê acessos da arx sim (rn-18) 2026-10-09 p-03 login com google nesta sprint (rn-22) 2026-10-09 p-07 mfa das contas locais aplicativo autenticador totp (rn-21) 2026-10-09 p-09 várias organizações microsoft por tenant permitido (rn-20) 2026-10-09 — monorepo ou repositórios separados dois repositórios, um container app por serviço ( adr-009 ) 2026-10-08 — banco único ou bancos existentes cp_identity e civitas_db , um schema por serviço ( adr-001 ) 2026-10-08 — como isolar os dados de cada cliente um schema por tenant no civitas_db ( adr-002 ) 2026-10-08 i-01 onde ficam convites e identidades externas identity.invitations e identity.external_identities 2026-10-08 i-02 auditoria de ações sem tenant tenancy.platform_audit_events , gravada pelo core 2026-10-08 i-03 nome do schema no catálogo coluna schema_name em tenancy.tenants 2026-10-08 i-04 credenciais dos administradores locais auth.local_credentials ; admin como usuário normal ( adr-014 ) 2026-10-08 — login dependente do civitas-api cache de tenants no authentication ( adr-013 ) 2026-10-08 — quem entrega os eventos do outbox outbox relay + service bus ( adr-010 ) 2026-10-08"}, {"id": "p-Glossario", "t": "glossário", "x": "termo significado tenant um cliente da plataforma, com seus usuários, configurações e dados isolados plano de controle dados de quem é quem: tenants, usuários, papéis, licenças. compartilhado plano de dados dados vindos das ferramentas do cliente. isolado em um schema por tenant idp provedor de identidade do cliente (entra id ou google workspace) sso login único: o usuário entra com a conta corporativa que já tem tid identificador imutável da organização no entra id oid identificador imutável do usuário no entra id sub identificador imutável do usuário no google break-glass conta local de emergência, usada para administração e recuperação membership vínculo entre um usuário e um tenant rbac controle de acesso por papéis row-level security (rls) recurso do postgresql que bloqueia linhas de outro tenant no próprio banco provisionamento criação automática de tudo que um tenant novo precisa adr registro de decisão de arquitetura sprint review apresentação do que foi construído ao final da sprint cab civitas architecture blueprint, o documento de arquitetura de referência secops interface interna da arx para operar a plataforma schema de tenant schema tenant_&lt;id&gt; no civitas_db que guarda todos os dados de domínio de um cliente search_path configuração do postgresql que define em qual schema as consultas rodam; aplicada com set local a cada transação catálogo schema tenancy , com o cadastro de todos os tenants e o nome do schema de cada um audit_outbox tabela em cada schema onde o serviço grava eventos de auditoria na mesma transação, publicados depois para o core x-civitas-service-token cabeçalho que autentica chamadas internas entre serviços pacote comum biblioteca no azure artifacts com token, contexto de tenant, logs e auditoria outbox relay worker que lê os audit_outbox e publica os eventos no service bus cache de tenants cópia do status dos tenants no authentication, para o login não depender do tenant service dlq dead-letter queue: fila de mensagens que falharam várias vezes, monitorada com alerta"}, {"id": "p-Como-Contribuir", "t": "como contribuir", "x": "regra principal toda entrega atualiza a wiki. uma história só está pronta quando a documentação dela está aqui. quando escrever o quê situação onde documentar tomei uma decisão técnica relevante nova página em decisões , a partir do modelo criei ou alterei um serviço página do serviço em serviços a diretoria definiu ou mudou uma regra regras de negócio , com data e quem decidiu surgiu uma dúvida de negócio pendências , com recomendação mudou algo de infraestrutura página correspondente em devops terminou a sprint página da sprint em sprints estilo comece pela resposta: a primeira frase diz o que é ou o que foi decidido. tabelas para comparar itens; listas numeradas para passos. diagramas em mermaid ( ::: mermaid ... ::: ), versionados junto com o texto. nada de segredo, senha ou dado de cliente na wiki. como editar a wiki fica no repositório civitas-wiki , publicado como wiki no azure devops. edite os arquivos e abra pull request; quando a mudança acompanha código, cite o pull request do código. para criar uma página, crie o arquivo .md e inclua o nome dele no arquivo .order da pasta."}];
+const links=[...document.querySelectorAll('nav a')];
+const secs=[...document.querySelectorAll('.page')];
+const q=document.getElementById('q'), hits=document.getElementById('hits');
+function search(){
+  const v=q.value.trim().toLowerCase();
+  if(!v){secs.forEach(s=>s.classList.remove('dim'));links.forEach(a=>a.parentElement.classList.remove('hide'));hits.textContent='';return;}
+  let n=0;
+  IDX.forEach(p=>{const ok=p.t.includes(v)||p.x.includes(v);n+=ok;
+    document.getElementById(p.id).classList.toggle('dim',!ok);
+    const a=links.find(l=>l.dataset.id===p.id); if(a)a.parentElement.classList.toggle('hide',!ok);});
+  hits.textContent=n?`${n} página(s) com “${q.value.trim()}”`:'Nenhuma página encontrada';
+}
+q.addEventListener('input',search);
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('on',a.dataset.id===e.target.id));}})},{rootMargin:'-10% 0px -80% 0px'});
+secs.forEach(s=>obs.observe(s));
+document.getElementById('tg').addEventListener('click',()=>{const r=document.querySelector('.rail');r.classList.toggle('open');document.getElementById('tg').setAttribute('aria-expanded',r.classList.contains('open'));});
+links.forEach(a=>a.addEventListener('click',()=>document.querySelector('.rail').classList.remove('open')));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script><script>mermaid.initialize({startOnLoad:true,securityLevel:"strict",theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});</script>
